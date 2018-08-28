@@ -9,7 +9,7 @@ PH
 
 ### Installation
 
-BlizzPy was written in Python 3.6, and may not work with Python 2.
+BlizzPy was written in Python 3.6, and will not work with Python 2.
 
 Required packages:
 
