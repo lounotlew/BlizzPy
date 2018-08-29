@@ -68,8 +68,12 @@ class WoWCharacter:
 		self.items_data = {}
 		self.mounts_data = {}
 		self.professions_data = {}
-		self.raid_prog_data = {}
-		
+
+		self.raid_prog_data = []
+
+		self.pvp_data = {}
+
+
 
 
 	"""."""
@@ -511,14 +515,120 @@ class WoWCharacter:
 
 	"""."""
 	def get_raid_prog_data(self):
-		return
+		try:
+			with urllib.request.urlopen(self._get_data_with_field("progression")) as url:
+				raid_prog_data = json.loads(url.read().decode())['progression']
+
+			self.raid_prog_data = raid_prog_data['raids']
+
+			return raid_prog_data['raids']
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
+
+
+	"""."""
+	def get_raid_prog(self, raid_name):
+		if not self.raid_prog_data:
+			raid_prog_data = self.get_raid_prog_data()
+
+		if raid_name.lower() not in [raid['name'].lower() for raid in self.raid_prog_data]:
+			raise ValueError("That raid does not exist. Please check its spelling. Upper/lowercase does not matter.")
+			return
+
+		raid = next((raid for raid in self.raid_prog_data if raid['name'].lower() == raid_name.lower()), None)
+
+		return raid
+
+
+	"""
+
+	   *Mythic difficulty kills start from SoO."""
+	def get_num_boss_kills(self, boss_name, raid_name, difficulty):
+		accepted_difficulties = ["lfr", "normal", "heroic", "mythic"]
+
+		if difficulty.lower() not in accepted_difficulties:
+			raise ValueError("Invalid difficulty. Your difficulty must be all, LFR, normal, heroic, or mythic.")
+			return
+
+		if not self.raid_prog_data:
+			raid_prog_data = self.get_raid_prog_data()
+
+		if raid_name.lower() not in [raid['name'].lower() for raid in self.raid_prog_data]:
+			raise ValueError("That raid does not exist. Please check its spelling. Upper/lowercase does not matter.")
+			return
+
+		raid = next((raid for raid in self.raid_prog_data if raid['name'].lower() == raid_name.lower()), None)
+		bosses = raid['bosses']
+
+		if boss_name.lower() not in [boss['name'].lower() for boss in bosses]:
+			raise ValueError("That boss does not exist in that raid. Please check its spelling. Upper/lowercase does not matter.")
+			return
+
+		difficulty_to_kills = {'lfr': 'lfrKills', 'normal': 'normalKills', 'heroic': 'heroicKills', 'mythic': 'mythicKills'}
+
+		numKillsKey = difficulty_to_kills[difficulty.lower()]
+
+		try:
+			return next((boss for boss in bosses if boss['name'].lower() == boss_name.lower()), None)[numKillsKey]
+
+		except:
+			raise ValueError("That boss doesn't have that difficulty.")
+			return
+
+
+	"""
+
+	   *Mythic difficulty kills start from SoO."""
+	def get_boss_kill_time(self, boss_name, raid, difficulty):
+		accepted_difficulties = ["lfr", "normal", "heroic", "mythic"]
+
+		if difficulty.lower() not in accepted_difficulties:
+			raise ValueError("Invalid difficulty. Your difficulty must be all, LFR, normal, heroic, or mythic.")
+			return
+
+		if not self.raid_prog_data:
+			raid_prog_data = self.get_raid_prog_data()
+
+		if raid_name.lower() not in [raid['name'].lower() for raid in self.raid_prog_data]:
+			raise ValueError("That raid does not exist. Please check its spelling. Upper/lowercase does not matter.")
+			return
+
+		raid = next((raid for raid in self.raid_prog_data if raid['name'].lower() == raid_name.lower()), None)
+		bosses = raid['bosses']
+
+		if boss_name.lower() not in [boss['name'].lower() for boss in bosses]:
+			raise ValueError("That boss does not exist in that raid. Please check its spelling. Upper/lowercase does not matter.")
+			return
+
+		difficulty_to_killtime = {'lfr': 'lfrTimestamp', 'normal': 'normalTimestamp', 'heroic': 'heroicTimestamp', 'mythic': 'mythicTimestamp'}
+
+		killtimeKey = difficulty_to_kills[difficulty.lower()]
+
+		try:
+			return next((boss for boss in bosses if boss['name'].lower() == boss_name.lower()), None)[killtimeKey]
+
+		except:
+			raise ValueError("That boss doesn't have that difficulty.")
+			return
 
 
 ### Retrieving the character's PVP statistics. ###
 
 	"""."""
 	def get_pvp_data(self):
-		return
+		try:
+			with urllib.request.urlopen(self._get_data_with_field("pvp")) as url:
+				pvp_data = json.loads(url.read().decode())['pvp']
+
+			self.pvp_data = pvp_data['brackets']
+
+			return pvp_data['brackets']
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
 
 
 	"""."""
@@ -527,6 +637,45 @@ class WoWCharacter:
 			char_data = self.get_character_data()
 
 		return self.character_data['battlegroup']
+
+
+	"""."""
+	def get_totalHK(self):
+		if not self.character_data:
+			char_data = self.get_character_data()
+
+		return self.character_data['totalHonorableKills']
+
+
+	"""."""
+	def get_2v2_stats(self):
+		return
+
+
+	"""."""
+	def get_2v2_rating(self):
+		return
+
+
+	"""."""
+	def get_3v3_stats(self):
+		return
+
+
+	"""."""
+	def get_3v3_rating(self):
+		return
+
+
+	"""."""
+	def get_rbg_stats(self):
+		return
+
+
+	"""."""
+	def get_rbg_rating(self):
+		return
+
 
 
 ### Retrieving the character's reputations data. ###
