@@ -616,7 +616,9 @@ class WoWCharacter:
 
 ### Retrieving the character's PVP statistics. ###
 
-	"""."""
+	"""
+
+	   Returns"""
 	def get_pvp_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field("pvp")) as url:
@@ -631,7 +633,9 @@ class WoWCharacter:
 			return
 
 
-	"""."""
+	"""
+
+	   Returns"""
 	def get_battlegroup(self):
 		if not self.character_data:
 			char_data = self.get_character_data()
@@ -639,7 +643,9 @@ class WoWCharacter:
 		return self.character_data['battlegroup']
 
 
-	"""."""
+	"""
+
+	   Returns"""
 	def get_totalHK(self):
 		if not self.character_data:
 			char_data = self.get_character_data()
@@ -647,34 +653,103 @@ class WoWCharacter:
 		return self.character_data['totalHonorableKills']
 
 
-	"""."""
+	"""
+
+	   Returns"""
 	def get_2v2_stats(self):
-		return
+		if not self.pvp_data:
+			pvp_data = self.get_pvp_data()
+
+		return self.pvp_data['ARENA_BRACKET_2v2']
 
 
-	"""."""
+	"""
+
+	   Returns"""
 	def get_2v2_rating(self):
-		return
+		if not self.pvp_data:
+			pvp_data = self.get_pvp_data()
+
+		return self.pvp_data['ARENA_BRACKET_2v2']['rating']
 
 
 	"""."""
+	def get_2v2_winrate(self):
+		if not self.pvp_data:
+			pvp_data = self.get_pvp_data()
+
+		if self.pvp_data['ARENA_BRACKET_2v2']['seasonPlayed'] == 0:
+			return None
+
+		win_perc = round(self.pvp_data['ARENA_BRACKET_2v2']['seasonWon']*100 / self.pvp_data['ARENA_BRACKET_2v2']['seasonPlayed'], 2)
+
+		return win_perc
+
+
+	"""
+
+	   Returns"""
 	def get_3v3_stats(self):
-		return
+		if not self.pvp_data:
+			pvp_data = self.get_pvp_data()
+
+		return self.pvp_data['ARENA_BRACKET_3v3']
 
 
-	"""."""
+	"""
+
+	   Returns"""
 	def get_3v3_rating(self):
-		return
+		if not self.pvp_data:
+			pvp_data = self.get_pvp_data()
+
+		return self.pvp_data['ARENA_BRACKET_3v3']['rating']
 
 
 	"""."""
+	def get_3v3_winrate(self):
+		if not self.pvp_data:
+			pvp_data = self.get_pvp_data()
+
+		if self.pvp_data['ARENA_BRACKET_3v3']['seasonPlayed'] == 0:
+			return None
+
+		win_perc = round(self.pvp_data['ARENA_BRACKET_3v3']['seasonWon']*100 / self.pvp_data['ARENA_BRACKET_3v3']['seasonPlayed'], 2)
+
+		return win_perc
+
+
+	"""
+
+	   Returns"""
 	def get_rbg_stats(self):
-		return
+		if not self.pvp_data:
+			pvp_data = self.get_pvp_data()
+
+		return self.pvp_data['ARENA_BRACKET_RBG']
+
+
+	"""
+
+	   Returns"""
+	def get_rbg_rating(self):
+		if not self.pvp_data:
+			pvp_data = self.get_pvp_data()
+
+		return self.pvp_data['ARENA_BRACKET_RBG']['rating']
 
 
 	"""."""
-	def get_rbg_rating(self):
-		return
+	def get_rbg_winrate(self):
+		if not self.pvp_data:
+			pvp_data = self.get_pvp_data()
+
+		if self.pvp_data['ARENA_BRACKET_RBG']['seasonPlayed'] == 0:
+			return None
+
+		win_perc = round(self.pvp_data['ARENA_BRACKET_RBG']['seasonWon']*100 / self.pvp_data['ARENA_BRACKET_RBG']['seasonPlayed'], 2)
+
+		return win_perc
 
 
 
