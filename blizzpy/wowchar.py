@@ -81,12 +81,14 @@ class WoWCharacter:
 		self.statistics_data = {}
 		self.stats_data = {}
 
-
+		#
+		self.feed_data = []
 		self.raid_prog_data = []
 		self.quests_data = []
 		self.rep_data = []
 		self.talents_data = []
 		self.titles_data = []
+
 
 
 	"""."""
@@ -131,11 +133,9 @@ class WoWCharacter:
 	def get_character_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data()) as url:
-				char_data = json.loads(url.read().decode())
+				self.character_data = json.loads(url.read().decode())
 
-			self.character_data = char_data
-
-			return char_data
+			return self.character_data
 
 		except:
 			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
@@ -213,11 +213,9 @@ class WoWCharacter:
 	def get_achievement_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field("achievements")) as url:
-				ach_data = json.loads(url.read().decode())['achievements']
+				self.ach_data = json.loads(url.read().decode())['achievements']
 
-			self.ach_data = ach_data
-
-			return ach_data
+			return self.ach_data
 
 		except:
 			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
@@ -260,11 +258,9 @@ class WoWCharacter:
 	def get_appearance_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field("appearance")) as url:
-				appearance_data = json.loads(url.read().decode())['appearance']
+				self.appearance_data = json.loads(url.read().decode())['appearance']
 
-			self.appearance_data = appearance_data
-
-			return appearance_data
+			return self.appearance_data
 
 		except:
 			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
@@ -307,12 +303,15 @@ class WoWCharacter:
 
 	"""Return the """
 	def get_feed(self, as_df=False):
-		return
+		try:
+			with urllib.request.urlopen(self._get_data_with_field("feed")) as url:
+				self.feed_data = json.loads(url.read().decode())['feed']
 
+			return self.feed_data
 
-	"""."""
-	def get_latest_activity(self):
-		return
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
 
 
 ### Retrieving the character's guild data. ###
@@ -321,11 +320,9 @@ class WoWCharacter:
 	def get_guild_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field("guild")) as url:
-				guild_data = json.loads(url.read().decode())['guild']
+				self.guild_data = json.loads(url.read().decode())['guild']
 
-			self.guild_data = guild_data
-
-			return guild_data
+			return self.guild_data
 
 		except:
 			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
@@ -378,11 +375,9 @@ class WoWCharacter:
 
 		try:
 			with urllib.request.urlopen(self._get_data_with_field("hunterPets")) as url:
-				hunter_pet_data = json.loads(url.read().decode())['hunterPets']
+				self.hunter_pet_data = json.loads(url.read().decode())['hunterPets']
 
-			self.hunter_pet_data = hunter_pet_data
-
-			return hunter_pet_data
+			return self.hunter_pet_data
 
 		except:
 			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
@@ -418,11 +413,9 @@ class WoWCharacter:
 	def get_items_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field("items")) as url:
-				items_data = json.loads(url.read().decode())['items']
+				self.items_data = json.loads(url.read().decode())['items']
 
-			self.items_data = items_data
-
-			return items_data
+			return self.items_data
 
 		except:
 			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
@@ -455,11 +448,9 @@ class WoWCharacter:
 	def get_mount_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field("mounts")) as url:
-				mounts_data = json.loads(url.read().decode())['mounts']
+				self.mounts_data = json.loads(url.read().decode())['mounts']
 
-			self.mounts_data = mounts_data
-
-			return mounts_data
+			return self.mounts_data
 
 		except:
 			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
@@ -648,7 +639,7 @@ class WoWCharacter:
 
 			self.raid_prog_data = raid_prog_data['raids']
 
-			return raid_prog_data['raids']
+			return self.raid_prog_data
 
 		except:
 			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
@@ -753,7 +744,7 @@ class WoWCharacter:
 
 			self.pvp_data = pvp_data['brackets']
 
-			return pvp_data['brackets']
+			return self.pvp_data
 
 		except:
 			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
@@ -886,11 +877,9 @@ class WoWCharacter:
 	def get_reputation_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field("reputation")) as url:
-				rep_data = json.loads(url.read().decode())['reputation']
+				self.rep_data = json.loads(url.read().decode())['reputation']
 
-			self.rep_data = rep_data
-
-			return rep_data
+			return self.rep_data
 
 		except:
 			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
