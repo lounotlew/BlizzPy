@@ -75,10 +75,15 @@ class WoWCharacter:
 		self.hunter_pet_data = {}
 		self.items_data = {}
 		self.mounts_data = {}
+		self.pets_data = {}
 		self.professions_data = {}
 		self.pvp_data = {}
+		self.statistics_data = {}
+		self.stats_data = {}
+
 
 		self.raid_prog_data = []
+		self.quests_data = []
 		self.rep_data = []
 		self.talents_data = []
 		self.titles_data = []
@@ -508,15 +513,129 @@ class WoWCharacter:
 ### Retrieving the character's non-hunter pets data. ###
 
 	"""."""
-	def get_pet_data(self):
-		return
+	def get_pets_data(self):
+		try:
+			with urllib.request.urlopen(self._get_data_with_field("pets")) as url:
+				self.pets_data = json.loads(url.read().decode())['pets']
+
+			return self.pets_data
+
+			return 
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
+
+
+	"""."""
+	def get_num_pets(self):
+		if not self.pets_data:
+			pets_data = self.get_pets_data()
+
+		return self.pets_data['numCollected']
+
+
+	"""."""
+	def get_percent_collected(self):
+		if not self.pets_data:
+			pets_data = self.get_pets_data()
+
+		perc = round(100*self.pets_data['numCollected']/(self.pets_data['numCollected'] + self.pets_data['numNotCollected']), 2)
+
+		return perc
+
+
+	"""."""
+	def get_pet_names(self):
+		if not self.pets_data:
+			pets_data = self.get_pets_data()
+		return [pet['name'] for pet in self.pets_data['collected']]
+
+
+	"""."""
+	def get_pet_ids(self):
+		if not self.pets_data:
+			pets_data = self.get_pets_data()
+
+		return [pet['creatureID'] for pet in self.pets_data['collected']]
+
+
+	"""."""
+	def get_favorite_pets(self, as_names=True):
+		if not self.pets_data:
+			pets_data = self.get_pets_data()
+
+		if as_names:
+			favorite_pets = [pet['name'] for pet in self.pets_data['collected'] if pet['isFavorite']]
+
+		else:
+			favorite_pets = [pet for pet in self.pets_data['collected'] if pet['isFavorite']]
+
+		return favorite_pets		
+
+
+	"""."""
+	def get_pet_quality(self, pet_name):
+		if not self.pets_data:
+			pets_data = self.get_pets_data()
+
+		quality = next((pet['stats']['petQualityId'] for pet in self.pets_data['collected'] if pet['name'].lower() == pet_name.lower()), None)
+
+		return quality
+		
+
+
+	"""."""
+	def get_pet_stats(self, pet_name):
+		if not self.pets_data:
+			pets_data = self.get_pets_data()
+
+		stats = next((pet['stats'] for pet in self.pets_data['collected'] if pet['name'].lower() == pet_name.lower()), None)
+
+		return stats
 
 
 ### Retrieving the character's professions data. ###
 
 	"""."""
 	def get_professions_data(self):
-		return
+		try:
+			with urllib.request.urlopen(self._get_data_with_field("professions")) as url:
+				self.professions_data = json.loads(url.read().decode())['professions']
+
+			return self.professions_data
+
+			return 
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
+
+
+	"""."""
+	def get_primary_professions(self):
+		if not self.professions_data:
+			professions_data = self.professions_data
+
+		primary_profs = professions['primary']
+
+		if len(primary_profs) == 0:
+			return None
+
+		return {prof['name']: prof['rank'] for prof in primary_profs}
+
+
+	"""."""
+	def get_secondary_professions(self):
+		if not self.professions_data:
+			professions_data = self.professions_data
+
+		secondary_profs = professions['secondary']
+
+		if len(secondary_profs) == 0:
+			return None
+
+		return {prof['name']: prof['rank'] for prof in secondary_profs}
 
 
 ### Retrieving the character's raid progression data. ###
@@ -880,22 +999,58 @@ class WoWCharacter:
 ### Retrieving the character's quests data. ###
 
 	"""."""
-	def get_quest_data(self):
-		return
+	def get_quests_data(self):
+		try:
+			with urllib.request.urlopen(self._get_data_with_field("quests")) as url:
+				self.quests_data = json.loads(url.read().decode())['quests']
+
+			return self.quests_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
+
+
+	"""."""
+	def has_completed_quest(self, quest_id):
+		if not self.quests_data:
+			quests_data = self.get_quests_data
+
+		if quest_id in self.quests_data:
+			return True
+
+		else:
+			return False
 
 
 ### Retrieving the character's gameplay statistics (most used X, least used Y, etc.). ###
 
 	"""."""
 	def get_statistics_data(self):
-		return
+		try:
+			with urllib.request.urlopen(self._get_data_with_field("statistics")) as url:
+				self.statistics_data = json.loads(url.read().decode())['statistics']
+
+			return self.statistics_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
 
 
 ### Retrieving the character's in-game stats (Str, Int, Agi, etc.). ###
 
 	"""."""
 	def get_stats_data(self):
-		return
+		try:
+			with urllib.request.urlopen(self._get_data_with_field("stats")) as url:
+				self.stats_data = json.loads(url.read().decode())['stats']
+
+			return self.stats_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
 
 
 ### Retrieving the character's talents. ###
