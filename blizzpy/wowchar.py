@@ -68,10 +68,11 @@ class WoWCharacter:
 		self.items_data = {}
 		self.mounts_data = {}
 		self.professions_data = {}
+		self.pvp_data = {}
 
 		self.raid_prog_data = []
+		self.rep_data = []
 
-		self.pvp_data = {}
 
 
 
@@ -757,7 +758,116 @@ class WoWCharacter:
 
 	"""."""
 	def get_reputation_data(self):
-		return
+		try:
+			with urllib.request.urlopen(self._get_data_with_field("reputation")) as url:
+				rep_data = json.loads(url.read().decode())['reputation']
+
+			self.rep_data = rep_data
+
+			return rep_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
+
+
+	"""."""
+	def get_reputations(self):
+		if not self.rep_data:
+			rep_data = self.get_reputation_data()
+
+		return [rep['name'] for rep in self.rep_data]
+
+
+	"""."""
+	def get_reputation_amount(self, faction_name):
+		if not self.rep_data:
+			rep_data = self.get_reputation_data()
+
+		if faction_name not in [rep['name'] for rep in self.rep_data]:
+			raise ValueError(self.characterName + " has no reputation with that faction.")
+
+		return next((rep['value'] for rep in self.rep_data if rep['name'].lower() == faction_name.lower()), None)
+
+
+	"""."""
+	def get_reputation_level(self, faction_name):
+		if not self.rep_data:
+			rep_data = self.get_reputation_data()
+
+		if faction_name not in [rep['name'] for rep in self.rep_data]:
+			raise ValueError(self.characterName + " has no reputation with that faction.")
+
+		rep_standing_map = {'7': 'Exalted', '6': 'Revered', '5': 'Honored', '4': 'Friendly', '3': 'Neutral',
+			'2': 'Unfriendly', '1': 'Hostile', '0': 'Hated'}
+
+		standing = next((rep['standing'] for rep in self.rep_data if rep['name'].lower() == faction_name.lower()), None)	
+
+		return rep_standing_map[str(standing)]
+
+
+	"""."""
+	def get_exalted_reputations(self):
+		if not self.rep_data:
+			rep_data = self.get_reputation_data()
+
+		return [rep['name'] for rep in self.rep_data if rep['standing'] == 7]
+
+
+	"""."""
+	def get_revered_reputations(self):
+		if not self.rep_data:
+			rep_data = self.get_reputation_data()
+
+		return [rep['name'] for rep in self.rep_data if rep['standing'] == 6]
+
+
+	"""."""
+	def get_honored_reputations(self):
+		if not self.rep_data:
+			rep_data = self.get_reputation_data()
+
+		return [rep['name'] for rep in self.rep_data if rep['standing'] == 5]
+
+
+	"""."""
+	def get_friendly_reputations(self):
+		if not self.rep_data:
+			rep_data = self.get_reputation_data()
+
+		return [rep['name'] for rep in self.rep_data if rep['standing'] == 4]
+
+
+	"""."""
+	def get_neutral_reputations(self):
+		if not self.rep_data:
+			rep_data = self.get_reputation_data()
+
+		return [rep['name'] for rep in self.rep_data if rep['standing'] == 3]
+
+
+	"""."""
+	def get_unfriendly_reputations(self):
+		if not self.rep_data:
+			rep_data = self.get_reputation_data()
+
+		return [rep['name'] for rep in self.rep_data if rep['standing'] == 2]
+
+
+	"""."""
+	def get_hostile_reputations(self):
+		if not self.rep_data:
+			rep_data = self.get_reputation_data()
+
+		return [rep['name'] for rep in self.rep_data if rep['standing'] == 1]
+
+
+	"""."""
+	def get_hated_reputations(self):
+		if not self.rep_data:
+			rep_data = self.get_reputation_data()
+
+		return [rep['name'] for rep in self.rep_data if rep['standing'] == 0]
 
 
 ### Retrieving the character's quests data. ###
@@ -789,18 +899,6 @@ class WoWCharacter:
 	"""."""
 	def get_titles(self):
 		return
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

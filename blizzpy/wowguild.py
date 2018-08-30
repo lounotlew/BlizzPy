@@ -55,10 +55,22 @@ class WoWGuild:
 	def _api_request(self, endpoint):
 		return
 
+	"""."""
+	def _get_data(self):
+		url = "{root}/wow/guild/{realm}/{guild_name}?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			realm = self.realm,
+			guild_name = self.guild_name.replace(" ", "%20"),
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
 
 	"""."""
 	def _get_data_with_field(self, field):
-		url = "{root}/wow/character/{realm}/{guild_name}?fields={field}&locale={locale}&apikey={api_key}".format(
+		url = "{root}/wow/guild/{realm}/{guild_name}?fields={field}&locale={locale}&apikey={api_key}".format(
 			root = self.root,
 			realm = self.realm,
 			guild_name = self.guild_name.replace(" ", "%20"),
@@ -68,6 +80,11 @@ class WoWGuild:
 			)
 
 		return url
+
+
+	"""Return the guild name and realm for this instance of WoWGuild."""
+	def guild_name(self):
+		return self.guild_name + "-" + self.realm
 
 
 ### Retrieving basic guild data. ###
