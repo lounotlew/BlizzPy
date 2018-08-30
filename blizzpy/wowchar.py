@@ -23,6 +23,14 @@ int_to_race = {'1': 'Human', '2': 'Orc', '3': 'Dwarf', '4': 'Night Elf', '5': 'F
 	'7': 'Gnome', '8': 'Troll', '9': 'Goblin', '10': 'Blood Elf', '11': 'Draenei', '22': 'Worgen',
 	'25': 'Pandaren', '27': 'Nightborne', '28': 'Highmountain Tauren', '29': 'Void Elf', '30': 'Lightforged Draenei'}
 
+# A dictionary that maps a character's class to their available specs.
+class_to_spec = {'Warrior': ['arms', 'fury', 'protection'], 'Paladin': ['holy', 'protection', 'retribution'],
+	'Hunter': ['beast mastery', 'marksmanship', 'survival'], 'Rogue': ['assassination', 'outlaw', 'subtlety'],
+	'Priest': ['discipline', 'holy', 'shadow'], 'Death Knight': ['blood', 'frost', 'unholy'],
+	'Shaman': ['elemental', 'enhancement', 'restoration'], 'Mage': ['arcane', 'fire', 'frost'],
+	'Warlock': ['affliction', 'demonology', 'destruction'], 'Monk': ['brewmaster', 'mistweaver', 'windwalker'], 
+	'Druid': ['balance', 'feral', 'guardian', 'restoration'], 'Demon Hunter': ['havoc', 'vengeance']}
+
 # 
 # Currently suppo
 class WoWCharacter:
@@ -72,9 +80,8 @@ class WoWCharacter:
 
 		self.raid_prog_data = []
 		self.rep_data = []
-
-
-
+		self.talents_data = []
+		self.titles_data = []
 
 
 	"""."""
@@ -877,34 +884,98 @@ class WoWCharacter:
 		return
 
 
-#?
+### Retrieving the character's gameplay statistics (most used X, least used Y, etc.). ###
+
 	"""."""
-	# def get player statistics
+	def get_statistics_data(self):
+		return
 
 
-#?
+### Retrieving the character's in-game stats (Str, Int, Agi, etc.). ###
+
 	"""."""
-	# def get stats
+	def get_stats_data(self):
+		return
 
 
 ### Retrieving the character's talents. ###
 
 	"""."""
-	def get_talents(self):
-		return
+	def get_talents_data(self):
+		try:
+			with urllib.request.urlopen(self._get_data_with_field("talents")) as url:
+				self.talents_data = json.loads(url.read().decode())['talents']
+
+			return self.talents_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
 
 
-### Retrieving the character's titles. ###
+	"""."""
+	def get_talents_by_spec(self, spec):
+		if not self.character_data:
+			character_data = self.get_character_data()
+
+		if not self.talents_data:
+			talents_data = self.get_talents_data()
+
+		if spec.lower() not in class_to_spec[int_to_class[str(character_data['class'])]]:
+			raise ValueError("This character's class does not have that spec.")
+			return
+
+		return [talents['talents']['spell']['name'] for talents in self.talents_data if talents['talents']['spec']['name'].lower() == spec.lower()]
+
+
+	"""."""
+	def get_tier_talents(self, tier, spec):
+		if not self.talents_data:
+			talents_data = self.get_talents_data()
+
+		if spec.lower() not in class_to_spec[self.get_class()]:
+			raise ValueError(self.characterName + "'s class does not have that spec.")
+			return
+
+		if tier not in [1, 2, 3, 4, 5, 6, 7]:
+			raise ValueError("Please select a valid talent tier (1-7).")
+			return
+
+		spec_talents = next((talents for talents in self.talents_data if talents['talents'][0]['spec']['name'].lower() == spec.lower()), None)['talents']
+
+		tier_talent = next((talent['spell']['name'] for talent in spec_talents if talent['tier'] == tier-1), None)
+
+		return tier_talent
+
+
+### Retrieving the character's titles data. ###
+
+	"""."""
+	def get_titles_data(self):
+		try:
+			with urllib.request.urlopen(self._get_data_with_field("titles")) as url:
+				self.titles_data = json.loads(url.read().decode())['titles']
+
+			return self.titles_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
+
 
 	"""."""
 	def get_titles(self):
-		return
+		if not self.titles_data:
+			titles_data = self.get_titles_data()
+
+		return [title['name'] for title in self.titles_data]
 
 
+	"""."""
+	def num_titles(self):
+		if not self.titles_data:
+			titles_data = self.get_titles_data()
 
-
-
-
-
+		return len([title['name'] for title in self.titles_data])	
 
 
