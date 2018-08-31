@@ -596,8 +596,6 @@ class WoWCharacter:
 
 			return self.professions_data
 
-			return 
-
 		except:
 			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
 			return
