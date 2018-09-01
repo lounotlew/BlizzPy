@@ -1,9 +1,10 @@
-#####
-#
-#
-#
-# Written by Lewis Kim.
-######
+##########################################################################
+# A wrapper for general game data, such as quest, zones, and bosses, in  #
+# Blizzard's WoW Community API.                                          #
+# Part of BlizzPy.                                                       #
+#                                                                        #
+# Written by Lewis Kim.                                                  #
+##########################################################################
 
 import requests
 import urllib, json

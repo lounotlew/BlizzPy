@@ -1,9 +1,9 @@
-#####
-#
-#
-#
-# Written by Lewis Kim.
-######
+##########################################################################
+# A wrapper for the realm auction data in Blizzard's WoW Community API.  #
+# Part of BlizzPy.                                                       #
+#                                                                        #
+# Written by Lewis Kim.                                                  #
+##########################################################################
 
 import requests
 import urllib, json

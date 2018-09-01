@@ -1,9 +1,9 @@
-###############################################################################
-# A wrapper for Blizzard's WoW Character API (part of the WoW Community API). #
-# Part of BlizzPy.                                                            #
-#                                                                             #
-# Written by Lewis Kim.                                                       #
-###############################################################################
+######################################################################
+# A wrapper for the character data in Blizzard's WoW Community API.  #
+# Part of BlizzPy.                                                   #
+#                                                                    #
+# Written by Lewis Kim.                                              #
+######################################################################
 
 import urllib, json
 import pandas as pd
