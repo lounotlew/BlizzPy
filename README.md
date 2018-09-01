@@ -5,18 +5,30 @@
 
 _*This project is in no way affiliated with Blizzard Entertainment._
 
-PH
+BlizzPy is a Blizzard API wrapper for Python. It fetches the raw json data from the Blizzard API in Python dictionaries, lists, or ``pandas`` dataframes, with many built-in functions that clean, process, and filter the data from the API for the user. This means that the users will always have the option to retrieve the raw API data as-is through BlizzPy, or can choose to retrieve them in more organized, specific data structures (e.g. choosing to retrieve a dictionary whose keys are guild member names and values are guild ranks, instead of processing the raw data themselves).
+
+BlizzPy currently supports the WoW Community API (for US, EU, and KR), with the D3 Community API, SC2 Community API, Game Data API, and WoW Game Data API being added very soon.
+
+For documentation, please visit [placeholder link]().
 
 ### Installation
 
 BlizzPy was written in Python 3.6, and will not work with Python 2.
 
+To install BlizzPy, simply run
+
+``placeholder code until blizzpy gets properly published.``
+
 Required packages:
 
-PH
+1) ``pandas`` (``pip3 install pandas``)
 
 ### References
 
 References to the libraries and packages used in BlizzPy:
 
-PH
+1) ``pandas`` (https://pandas.pydata.org/)
+2) ``urllib`` (https://docs.python.org/3/library/urllib.html)
+3) ``json`` (https://docs.python.org/3/library/json.html)
+4) ``requests`` (https://www.pythonforbeginners.com/requests/using-requests-in-python)
+
