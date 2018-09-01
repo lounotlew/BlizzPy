@@ -43,7 +43,7 @@ class WoWAuction:
 
 
 	"""."""
-	def _get_auction_data(self):
+	def _get_auction_data_url(self):
 		url = "{root}/wow/auction/data/{realm}?locale={locale}&apikey={api_key}".format(
 			root = self.root,
 			realm = self.realm,
@@ -59,7 +59,7 @@ class WoWAuction:
 	"""."""
 	def get_auction_data(self):
 		try:
-			with urllib.request.urlopen(self._get_auction_data()) as url1:
+			with urllib.request.urlopen(self._get_auction_data_url()) as url1:
 				raw_data = json.loads(url1.read().decode())
 				self.last_modified = raw_data['files'][0]['lastModified']
 

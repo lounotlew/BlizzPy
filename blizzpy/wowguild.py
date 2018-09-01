@@ -68,7 +68,7 @@ class WoWGuild:
 		return
 
 	"""."""
-	def _get_data(self):
+	def _get_data_url(self):
 		url = "{root}/wow/guild/{realm}/{guild_name}?locale={locale}&apikey={api_key}".format(
 			root = self.root,
 			realm = self.realm,
@@ -81,7 +81,7 @@ class WoWGuild:
 
 
 	"""."""
-	def _get_data_with_field(self, field):
+	def _get_data_with_field_url(self, field):
 		url = "{root}/wow/guild/{realm}/{guild_name}?fields={field}&locale={locale}&apikey={api_key}".format(
 			root = self.root,
 			realm = self.realm,
@@ -99,7 +99,7 @@ class WoWGuild:
 	"""."""
 	def get_guild_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data()) as url:
+			with urllib.request.urlopen(self._get_data_url()) as url:
 				self.guild_data = json.loads(url.read().decode())
 
 			return self.guild_data
@@ -127,7 +127,7 @@ class WoWGuild:
 	"""."""
 	def get_members_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("members")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("members")) as url:
 				self.members_data = json.loads(url.read().decode())['members']
 
 			return self.members_data
@@ -226,7 +226,7 @@ class WoWGuild:
 	"""."""
 	def get_guild_achievements_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("achievements")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("achievements")) as url:
 				self.ach_data = json.loads(url.read().decode())['achievements']
 
 			return self.ach_data
@@ -252,7 +252,7 @@ class WoWGuild:
 	"""."""
 	def get_guild_news_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("news")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("news")) as url:
 				self.news_data = json.loads(url.read().decode())['news']
 
 			return self.news_data
@@ -267,7 +267,7 @@ class WoWGuild:
 	"""."""
 	def get_guild_challenge_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("challenge")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("challenge")) as url:
 				self.challenge_data = json.loads(url.read().decode())['challenge']
 
 			return self.challenge_data

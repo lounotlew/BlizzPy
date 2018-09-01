@@ -46,7 +46,7 @@ class WoWPets:
 
 
 	"""."""
-	def _get_master_data(self):
+	def _get_master_data_url(self):
 		url = "{root}/wow/pet/?locale={locale}&apikey={api_key}".format(
 			root = self.root,
 			locale = self.locale,
@@ -56,7 +56,7 @@ class WoWPets:
 		return url
 
 	"""."""
-	def _get_ability_data(self, abilityId):
+	def _get_ability_data_url(self, abilityId):
 		url = "{root}/wow/pet/ability/{abilityId}?locale={locale}&apikey={api_key}".format(
 			root = self.root,
 			abilityId = abilityId,
@@ -68,7 +68,7 @@ class WoWPets:
 
 
 	"""."""
-	def _get_species_data(self, speciesId):
+	def _get_species_data_url(self, speciesId):
 		url = "{root}/wow/pet/species/{speciesId}?locale={locale}&apikey={api_key}".format(
 			root = self.root,
 			speciesId = speciesId,
@@ -80,7 +80,7 @@ class WoWPets:
 
 
 	"""."""
-	def _get_stats_data(self, speciesId, level, breedId, qualityId):
+	def _get_stats_data_url(self, speciesId, level, breedId, qualityId):
 		url = "{root}/wow/pet/stats/{speciesId}?level={level}&breedId={breedId}&qualityId={qualityId}&locale={locale}&apikey={api_key}".format(
 			root = self.root,
 			speciesId = speciesId,
@@ -99,7 +99,7 @@ class WoWPets:
 	"""."""
 	def get_master_list(self):
 		try:
-			with urllib.request.urlopen(self._get_master_data()) as url:
+			with urllib.request.urlopen(self._get_master_data_url()) as url:
 				self.master_data = json.loads(url.read().decode())['pets']
 
 			return self.master_data
@@ -178,7 +178,7 @@ class WoWPets:
 	"""."""
 	def get_ability_data(self, abilityId):
 		try:
-			with urllib.request.urlopen(self._get_ability_data(abilityId)) as url:
+			with urllib.request.urlopen(self._get_ability_data_url(abilityId)) as url:
 				self.ability_data = json.loads(url.read().decode())
 
 			return self.ability_data
@@ -193,7 +193,7 @@ class WoWPets:
 	"""."""
 	def get_species_data(self, speciesId):
 		try:
-			with urllib.request.urlopen(self._get_species_data(speciesId)) as url:
+			with urllib.request.urlopen(self._get_species_data_url(speciesId)) as url:
 				self.species_data = json.loads(url.read().decode())
 
 			return self.species_data
@@ -208,7 +208,7 @@ class WoWPets:
 	"""."""
 	def get_species_stats_data(self, speciesId, level=1, breedId=3, qualityId=1):
 		try:
-			with urllib.request.urlopen(self._get_stats_data(speciesId, level, breedId, qualityId)) as url:
+			with urllib.request.urlopen(self._get_stats_data_url(speciesId, level, breedId, qualityId)) as url:
 				self.ability_data = json.loads(url.read().decode())
 
 			return self.ability_data

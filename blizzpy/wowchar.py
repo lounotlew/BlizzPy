@@ -97,7 +97,7 @@ class WoWCharacter:
 
 
 	"""."""
-	def _get_data(self):
+	def _get_data_url(self):
 		url = "{root}/wow/character/{realm}/{characterName}?locale={locale}&apikey={api_key}".format(
 			root = self.root,
 			realm = self.realm,
@@ -110,7 +110,7 @@ class WoWCharacter:
 
 
 	"""."""
-	def _get_data_with_field(self, field):
+	def _get_data_with_field_url(self, field):
 		url = "{root}/wow/character/{realm}/{characterName}?fields={field}&locale={locale}&apikey={api_key}".format(
 			root = self.root,
 			realm = self.realm,
@@ -132,7 +132,7 @@ class WoWCharacter:
 	   calcClass, faction, totalHonorableKills."""
 	def get_character_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data()) as url:
+			with urllib.request.urlopen(self._get_data_url()) as url:
 				self.character_data = json.loads(url.read().decode())
 
 			return self.character_data
@@ -212,7 +212,7 @@ class WoWCharacter:
 	         criteriaCreated: """
 	def get_achievement_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("achievements")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("achievements")) as url:
 				self.ach_data = json.loads(url.read().decode())['achievements']
 
 			return self.ach_data
@@ -257,7 +257,7 @@ class WoWCharacter:
 	         customDisplayOptions: """
 	def get_appearance_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("appearance")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("appearance")) as url:
 				self.appearance_data = json.loads(url.read().decode())['appearance']
 
 			return self.appearance_data
@@ -302,9 +302,9 @@ class WoWCharacter:
 ### Retrieving the character's feed (activity) data. ###
 
 	"""Return the """
-	def get_feed(self, as_df=False):
+	def get_feed_data(self, as_df=False):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("feed")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("feed")) as url:
 				self.feed_data = json.loads(url.read().decode())['feed']
 
 			return self.feed_data
@@ -319,7 +319,7 @@ class WoWCharacter:
 	"""."""
 	def get_guild_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("guild")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("guild")) as url:
 				self.guild_data = json.loads(url.read().decode())['guild']
 
 			return self.guild_data
@@ -374,7 +374,7 @@ class WoWCharacter:
 				return
 
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("hunterPets")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("hunterPets")) as url:
 				self.hunter_pet_data = json.loads(url.read().decode())['hunterPets']
 
 			return self.hunter_pet_data
@@ -412,7 +412,7 @@ class WoWCharacter:
 	"""."""
 	def get_items_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("items")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("items")) as url:
 				self.items_data = json.loads(url.read().decode())['items']
 
 			return self.items_data
@@ -447,7 +447,7 @@ class WoWCharacter:
 	"""."""
 	def get_mount_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("mounts")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("mounts")) as url:
 				self.mounts_data = json.loads(url.read().decode())['mounts']
 
 			return self.mounts_data
@@ -506,7 +506,7 @@ class WoWCharacter:
 	"""."""
 	def get_pets_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("pets")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("pets")) as url:
 				self.pets_data = json.loads(url.read().decode())['pets']
 
 			return self.pets_data
@@ -591,7 +591,7 @@ class WoWCharacter:
 	"""."""
 	def get_professions_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("professions")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("professions")) as url:
 				self.professions_data = json.loads(url.read().decode())['professions']
 
 			return self.professions_data
@@ -632,7 +632,7 @@ class WoWCharacter:
 	"""."""
 	def get_raid_prog_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("progression")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("progression")) as url:
 				raid_prog_data = json.loads(url.read().decode())['progression']
 
 			self.raid_prog_data = raid_prog_data['raids']
@@ -737,7 +737,7 @@ class WoWCharacter:
 	   Returns"""
 	def get_pvp_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("pvp")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("pvp")) as url:
 				pvp_data = json.loads(url.read().decode())['pvp']
 
 			self.pvp_data = pvp_data['brackets']
@@ -874,7 +874,7 @@ class WoWCharacter:
 	"""."""
 	def get_reputation_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("reputation")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("reputation")) as url:
 				self.rep_data = json.loads(url.read().decode())['reputation']
 
 			return self.rep_data
@@ -988,7 +988,7 @@ class WoWCharacter:
 	"""."""
 	def get_quests_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("quests")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("quests")) as url:
 				self.quests_data = json.loads(url.read().decode())['quests']
 
 			return self.quests_data
@@ -1015,7 +1015,7 @@ class WoWCharacter:
 	"""."""
 	def get_statistics_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("statistics")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("statistics")) as url:
 				self.statistics_data = json.loads(url.read().decode())['statistics']
 
 			return self.statistics_data
@@ -1030,7 +1030,7 @@ class WoWCharacter:
 	"""."""
 	def get_stats_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("stats")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("stats")) as url:
 				self.stats_data = json.loads(url.read().decode())['stats']
 
 			return self.stats_data
@@ -1045,7 +1045,7 @@ class WoWCharacter:
 	"""."""
 	def get_talents_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("talents")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("talents")) as url:
 				self.talents_data = json.loads(url.read().decode())['talents']
 
 			return self.talents_data
@@ -1095,7 +1095,7 @@ class WoWCharacter:
 	"""."""
 	def get_titles_data(self):
 		try:
-			with urllib.request.urlopen(self._get_data_with_field("titles")) as url:
+			with urllib.request.urlopen(self._get_data_with_field_url("titles")) as url:
 				self.titles_data = json.loads(url.read().decode())['titles']
 
 			return self.titles_data
