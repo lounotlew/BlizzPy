@@ -10,8 +10,6 @@ import urllib, json
 import pandas as pd
 
 
-
-
 # Accepted API locales. zh_TW has been excluded for now due to continuous "503 Service Unavailable" errors from the Blizzard API.
 # To add: zh_TW
 accepted_locales = ["en_US", "en_GB", "ko_KR"]
