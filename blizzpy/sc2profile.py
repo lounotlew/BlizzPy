@@ -45,6 +45,8 @@ class SC2Profile:
 		self.locale = locale
 
 		self.profile_data = {}
+		self.ladders_data = {}
+		self.match_history = {}
 
 
 	""".
@@ -63,14 +65,36 @@ class SC2Profile:
 		return url
 
 
-	"""."""
+	""".
+
+	   https://us.api.battle.net/sc2/profile/3873960/1/Zorniza/ladders?locale=en_US&apikey=..."""
 	def _get_profile_ladders_data_url(self):
-		return
+		url = "{root}/sc2/profile/{profile_id}/{region_id}/{profile_name}/ladders?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			profile_id = self.profile_id,
+			region_id = self.region_id,
+			profile_name = self.profile_name,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
 
 
-	"""."""
+	""".
+
+	   https://us.api.battle.net/sc2/profile/3873960/1/Zorniza/matches?locale=en_US&apikey=..."""
 	def _get_match_history_data_url(self):
-		return
+		url = "{root}/sc2/profile/{profile_id}/{region_id}/{profile_name}/matches?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			profile_id = self.profile_id,
+			region_id = self.region_id,
+			profile_name = self.profile_name,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
 
 
 ### Retrieving profile data. ###
@@ -227,25 +251,102 @@ class SC2Profile:
 
 ### Retrieving profile ladders data. ###
 
+	"""."""
+	def get_profile_ladder_data(self):
+		try:
+			with urllib.request.urlopen(self._get_profile_ladders_data_url()) as url:
+				self.ladders_data = json.loads(url.read().decode())
 
+			return self.ladders_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
+
+
+	"""."""
+	def get_current_ladder(self):
+		if not self.ladders_data:
+			ladders_data = self.get_profile_ladder_data()
+
+		return self.ladders_data['currentSeason'][0]['ladder'][0]
+
+
+	"""."""
+	def get_current_ladder_name(self):
+		if not self.ladders_data:
+			ladders_data = self.get_profile_ladder_data()
+
+		if not self.ladders_data['currentSeason'][0]['ladder']:
+			return None
+
+		return self.ladders_data['currentSeason'][0]['ladder'][0]['ladderName']
+
+
+	"""."""
+	def get_current_league(self):
+		if not self.ladders_data:
+			ladders_data = self.get_profile_ladder_data()
+
+		if not self.ladders_data['currentSeason'][0]['ladder']:
+			return None
+
+		return self.ladders_data['currentSeason'][0]['ladder'][0]['league']
 
 
 ### Retrieving profile match history data. ###
 
+	"""."""
+	def get_match_history_data(self):
+		try:
+			with urllib.request.urlopen(self._get_match_history_data_url()) as url:
+				self.match_history = json.loads(url.read().decode())
+
+			return self.match_history
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
 
 
+	"""."""
+	def num_games_played(self):
+		if not self.match_history:
+			match_history = self.get_match_history_data()
+
+		num_games = len(self.match_history['matches'])
+
+		return num_games
 
 
+	"""."""
+	def total_winrate(self):
+		if not self.match_history:
+			match_history = self.get_match_history_data()
+
+		num_games = len(self.match_history['matches'])
+		num_wins = len([game for game in self.match_history['matches'] if game['decision'] == "WIN"])
+
+		return round((100*num_wins/num_games), 2)
 
 
+	"""."""
+	def solo_winrate(self):
+		if not self.match_history:
+			match_history = self.get_match_history_data()
+
+		num_games = len([game for game in self.match_history['matches'] if game['type'] == "SOLO"])
+		num_wins = len([game for game in self.match_history['matches'] if game['decision'] == "WIN" and game['type'] == "SOLO"])
+
+		return round((100*num_wins/num_games), 2)
 
 
+	"""."""
+	def get_solo_games(self):
+		if not self.match_history:
+			match_history = self.get_match_history_data()
 
+		solo_games = [game for game in self.match_history['matches'] if game['type'] == "SOLO"]
 
-
-
-
-
-
-
+		return solo_games
 

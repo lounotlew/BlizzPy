@@ -42,5 +42,5 @@ class SC2Ladder:
 
 		self.locale = locale
 
-		self.ladder_data = {}
+		self.ladder_data = {}		
 
