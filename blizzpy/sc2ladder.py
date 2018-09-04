@@ -104,6 +104,14 @@ class SC2Ladder:
 
 
 	"""."""
+	def get_member_winrates(self):
+		if not self.ladder_data:
+			self.get_ladder_data()
+
+		return {member['character']['displayName']:round(100*member['wins']/(member['wins']+member['losses']), 2) for member in self.ladder_data['ladderMembers']}
+
+
+	"""."""
 	def get_ladder_avg_winrate(self):
 		if not self.ladder_data:
 			self.get_ladder_data()

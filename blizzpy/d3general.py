@@ -40,15 +40,36 @@ class D3General:
 
 		self.locale = locale
 
+		self.act_index_data = {}
+		self.act_data = {}
 
-	"""."""
+
+
+	""".
+
+	   https://us.api.battle.net/d3/data/act?locale=en_US&apikey=..."""
 	def _get_act_index_data_url(self):
-		return
+		url = "{root}/d3/data/act?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
 
 
-	"""."""
-	def _get_act_data_url(self, actId):
-		return
+	""".
+
+	   https://us.api.battle.net/d3/data/act/1?locale=en_US&apikey=..."""
+	def _get_act_data_url(self, act_id):
+		url = "{root}/d3/data/act/{act_id}?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			act_id = act_id,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
 
 
 	""".
@@ -166,20 +187,155 @@ class D3General:
 
 ### Retrieving act data. ###
 
+	"""."""
+	def get_act_index_data(self):
+		try:
+			with urllib.request.urlopen(self._get_act_index_data_url()) as url:
+				self.act_index_data = json.loads(url.read().decode())
+
+			return self.act_index_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
+
+
+	"""."""
+	def get_act_data(self):
+		try:
+			with urllib.request.urlopen(self._get_act_data_url()) as url:
+				self.act_data = json.loads(url.read().decode())
+
+			return self.act_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
+
 
 ### Retrieving artisan and recipe data. ###
+
+	"""."""
+	def get_artisan_data(self, artisanSlug):
+		try:
+			with urllib.request.urlopen(self._get_artisan_data_url(artisanSlug)) as url:
+				self.artisan_data = json.loads(url.read().decode())
+
+			return self.artisan_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
+
+
+	"""."""
+	def get_recipe_data(self, artisanSlug, recipeSlug):
+		try:
+			with urllib.request.urlopen(self._get_recipe_data_url(artisanSlug, recipeSlug)) as url:
+				self.recipe_data = json.loads(url.read().decode())
+
+			return self.recipe_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
 
 
 ### Retrieving follower data. ###
 
+	"""."""
+	def get_follower_data(self, followerSlug):
+		try:
+			with urllib.request.urlopen(self._get_follower_data_url(followerSlug)) as url:
+				self.follower_data = json.loads(url.read().decode())
+
+			return self.follower_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
+
 
 ### Retrieving character class and skill data. ###
+
+	"""."""
+	def get_follower_data(self, followerSlug):
+		try:
+			with urllib.request.urlopen(self._get_follower_data_url(followerSlug)) as url:
+				self.follower_data = json.loads(url.read().decode())
+
+			return self.follower_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
 
 
 ### Retrieving item type data. ###
 
+	"""."""
+	def get_character_class_data(self, classSlug):
+		try:
+			with urllib.request.urlopen(self._get_character_class_data_url(classSlug)) as url:
+				self.character_class_data = json.loads(url.read().decode())
+
+			return self.character_class_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
+
+
+	"""."""
+	def get_skill_data(self, classSlug, skillSlug):
+		try:
+			with urllib.request.urlopen(self._get_skill_data_url(classSlug, skillSlug)) as url:
+				self.skill_data = json.loads(url.read().decode())
+
+			return self.skill_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
+
 
 ### Retrieving item data. ###
 
+	"""."""
+	def get_itemtype_index_data(self):
+		try:
+			with urllib.request.urlopen(self._get_itemtype_index_data_url()) as url:
+				self.itemtype_index_data = json.loads(url.read().decode())
 
+			return self.itemtype_index_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
+
+
+	"""."""
+	def get_itemtype_data(self, itemTypeSlug):
+		try:
+			with urllib.request.urlopen(self._get_itemtype_data_url(itemTypeSlug)) as url:
+				self.itemtype_data = json.loads(url.read().decode())
+
+			return self.itemtype_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
+
+
+	"""."""
+	def get_item_data(self, itemSlugAndId):
+		try:
+			with urllib.request.urlopen(self._get_item_data_url(itemSlugAndId)) as url:
+				self.item_data = json.loads(url.read().decode())
+
+			return self.item_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
 
