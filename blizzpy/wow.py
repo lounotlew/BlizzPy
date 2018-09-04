@@ -1,10 +1,17 @@
-######################################################################
-# A wrapper for the character data in Blizzard's WoW Community API.  #
-# Part of BlizzPy.                                                   #
-#                                                                    #
-# Written by Lewis Kim.                                              #
-######################################################################
+###############################################
+# A wrapper for the WoW Community API.        #
+# WoWChar: WoW Character Data.                #
+# WoWGuild: WoW Guild Data.                   #
+# WoWAuction: WoW Auction Snapshot Data.      #
+# WoWPets: WoW Non-hunter Pet Data.           #
+# WoWPVP: WoW PVP Leaderboard Data (NYI).     #
+# WoWGeneral: WoW General Game Data.          #
+# Part of BlizzPy.                            #
+#                                             #
+# Written by Lewis Kim.                       #
+###############################################
 
+import requests
 import urllib, json
 import pandas as pd
 
@@ -30,6 +37,7 @@ class_to_spec = {'Warrior': ['arms', 'fury', 'protection'], 'Paladin': ['holy', 
 	'Shaman': ['elemental', 'enhancement', 'restoration'], 'Mage': ['arcane', 'fire', 'frost'],
 	'Warlock': ['affliction', 'demonology', 'destruction'], 'Monk': ['brewmaster', 'mistweaver', 'windwalker'], 
 	'Druid': ['balance', 'feral', 'guardian', 'restoration'], 'Demon Hunter': ['havoc', 'vengeance']}
+
 
 # 
 # Currently suppo
@@ -1120,4 +1128,969 @@ class WoWCharacter:
 
 		return len([title['name'] for title in self.titles_data])
 
+
+#
+class WoWGuild:
+
+	""".
+
+	   PARAMS:
+	   self.root:
+	   self.api_key:
+	   self.locale:
+	   self.characterName:
+	   self.realm:"""
+	def __init__(self, api_key, guild_name, realm, locale="en_US", token=None):
+		# Check if the user-given locale is supported, i.e. is one of Blizzard's regions.
+		if locale not in accepted_locales:
+			raise ValueError("Not supported locale.")
+			return
+
+		if locale == "en_US":
+			self.root = "https://us.api.battle.net"
+
+		elif locale == "en_GB":
+			self.root = "https://eu.api.battle.net"
+
+		elif locale == "ko_KR":
+			self.root = "https://kr.api.battle.net"
+
+		# elif locale == "zh_TW":
+		# 	self.root = "https://tw.api.battle.net"
+
+		self.api_key = api_key
+		self.locale = locale
+
+		self.guild_name = guild_name
+		self.realm = realm
+
+		self.guild_data = {}
+		self.ach_data = {}
+
+		self.members_data = []
+		self.news_data = []
+		self.challenge_data = []
+
+
+	"""."""
+	def _api_request(self, endpoint):
+		return
+
+	"""."""
+	def _get_data_url(self):
+		url = "{root}/wow/guild/{realm}/{guild_name}?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			realm = self.realm,
+			guild_name = self.guild_name.replace(" ", "%20"),
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	"""."""
+	def _get_data_with_field_url(self, field):
+		url = "{root}/wow/guild/{realm}/{guild_name}?fields={field}&locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			realm = self.realm,
+			guild_name = self.guild_name.replace(" ", "%20"),
+			field = field,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+### Retrieving basic guild data. ###
+
+	"""."""
+	def get_guild_data(self):
+		try:
+			with urllib.request.urlopen(self._get_data_url()) as url:
+				self.guild_data = json.loads(url.read().decode())
+
+			return self.guild_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
+
+
+	"""Return the guild name and realm for this instance of WoWGuild."""
+	def get_guild_name(self):
+		return self.guild_name + "-" + self.realm
+
+
+	"""."""
+	def get_guild_emblem(self):
+		if not self.guild_data:
+			guild_data = self.get_guild_data()
+
+		return self.guild_data['emblem']
+
+
+### Retrieving guild members data. ###
+
+	"""."""
+	def get_members_data(self):
+		try:
+			with urllib.request.urlopen(self._get_data_with_field_url("members")) as url:
+				self.members_data = json.loads(url.read().decode())['members']
+
+			return self.members_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
+
+	"""."""
+	def get_member_info(self, member_name):
+		if not self.members_data:
+			members_data = self.get_members_data()
+
+		return next((member for member in self.members_data if member['character']['name'].lower() == member_name.lower()), None)
+
+
+	"""."""
+	def get_member_rank(self, member_name):
+		if not self.members_data:
+			members_data = self.get_members_data()
+
+		return next((member['rank'] for member in self.members_data if member['character']['name'] == member_name), None)
+
+
+	"""."""
+	def get_num_members(self):
+		if not self.members_data:
+			members_data = self.get_members_data()
+
+		return len(self.members_data)
+
+
+	"""."""
+	def get_members_names(self):
+		if not self.members_data:
+			members_data = self.get_members_data()
+
+		return [member['character']['name'] for member in self.members_data]
+
+
+	"""."""
+	def get_members_by_spec(self, spec, as_names=False):
+		if not self.members_data:
+			members_data = self.get_members_data()
+
+		if as_names:
+			filtered_members = [member['character']['name'] for member in self.members_data if 'spec' in member['character'].keys() and member['character']['spec']['name'].lower() == spec.lower()]
+
+		else:
+			filtered_members = [member for member in self.members_data if 'spec' in member['character'].keys() and member['character']['spec']['name'].lower() == spec.lower()]
+
+		return filtered_members
+
+
+	"""."""
+	def get_members_by_role(self, role, as_names=False):
+		if role.lower() not in ['dps', 'tank', 'healer']:
+			raise ValueError("Not a valid role.")
+			return
+
+		role_map = {'dps': 'DPS', 'healer': 'HEALING', 'tank': 'TANK'}
+		role = role_map[role.lower()]
+
+		if not self.members_data:
+			members_data = self.get_members_data()
+
+		if as_names:
+			filtered_members = [member['character']['name'] for member in self.members_data if 'spec' in member['character'].keys() and member['character']['spec']['role'].lower() == role.lower()]
+
+		else:
+			filtered_members = [member for member in self.members_data if 'spec' in member['character'].keys() and member['character']['spec']['role'].lower() == role.lower()]
+
+		return filtered_members
+
+
+	"""."""
+	def get_members_by_rank(self, rank, names=False):
+		if not type(rank) == int:
+			raise ValueError("Rank must be an integer.")
+			return
+
+		if not self.members_data:
+			members_data = self.get_members_data()
+
+		if names:
+			filtered_members = [member['character']['name'] for member in self.members_data if member['rank'] == rank]
+
+		else:
+			filtered_members = [member for member in self.members_data if member['rank'] == rank]
+
+		return filtered_members	
+
+
+### Retrieving guild achievements data. ###
+
+	"""."""
+	def get_guild_achievements_data(self):
+		try:
+			with urllib.request.urlopen(self._get_data_with_field_url("achievements")) as url:
+				self.ach_data = json.loads(url.read().decode())['achievements']
+
+			return self.ach_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
+
+
+	"""."""
+	def guild_has_achievement(self, achievement_id):
+		if not self.ach_data:
+			ach_data = self.get_guild_achievements_data()
+
+		if achievement_id in self.ach_data['achievementsCompleted']:
+			return True
+
+		return False
+
+
+### Retrieving guild news feed data. ###
+
+	"""."""
+	def get_guild_news_data(self):
+		try:
+			with urllib.request.urlopen(self._get_data_with_field_url("news")) as url:
+				self.news_data = json.loads(url.read().decode())['news']
+
+			return self.news_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
+
+
+### Retrieving guild challenges data. ###
+
+	"""."""
+	def get_guild_challenge_data(self):
+		try:
+			with urllib.request.urlopen(self._get_data_with_field_url("challenge")) as url:
+				self.challenge_data = json.loads(url.read().decode())['challenge']
+
+			return self.challenge_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, character name, or realm name.")
+			return
+
+
+	"""."""
+	def get_completed_challenges(self, as_names=False):
+		if not self.challenge_data:
+			challenge_data = self.get_guild_challenge_data()
+
+		if as_names:
+			return [challenge['map']['name'] for challenge in self.challenge_data if challenge['map']['hasChallengeMode']]
+
+		else:
+			return [challenge for challenge in self.challenge_data if challenge['map']['hasChallengeMode']]
+
+
+	"""."""
+	def has_challenge(self, name):
+		if not self.challenge_data:
+			challenge_data = self.get_guild_challenge_data()
+
+		try:
+			challenge = next((challenge for challenge in self.challenge_data if challenge['map']['name'].lower() == name.lower()))
+
+			return challenge['map']['hasChallengeMode']
+
+		except:
+			raise ValueError("Invalid challenge name.")
+			return
+
+
+#
+class WoWAuction:
+
+
+	def __init__(self, api_key, realm, locale="en_US", token=None):
+		# Check if the user-given locale is supported, i.e. is one of Blizzard's regions.
+		if locale not in accepted_locales:
+			raise ValueError("Not supported locale.")
+			return
+
+		if locale == "en_US":
+			self.root = "https://us.api.battle.net"
+
+		elif locale == "en_GB":
+			self.root = "https://eu.api.battle.net"
+
+		elif locale == "ko_KR":
+			self.root = "https://kr.api.battle.net"
+
+		# elif locale == "zh_TW":
+		# 	self.root = "https://tw.api.battle.net"
+
+		self.realm = realm
+		self.api_key = api_key
+		self.locale = locale
+
+		self.last_modified = 0
+
+
+	"""."""
+	def _get_auction_data_url(self):
+		url = "{root}/wow/auction/data/{realm}?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			realm = self.realm,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+### Retrieving WoW auction house patch data. ###
+
+	"""."""
+	def get_auction_data(self):
+		try:
+			with urllib.request.urlopen(self._get_auction_data_url()) as url1:
+				raw_data = json.loads(url1.read().decode())
+				self.last_modified = raw_data['files'][0]['lastModified']
+
+			with urllib.request.urlopen(raw_data['files'][0]['url']) as url2:
+				self.auction_data = json.loads(url2.read().decode())['auctions']
+
+			return self.auction_data
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or realm.")
+			return
+
+
+	"""."""
+	def get_last_modified(self):
+		if not self.last_modified:
+			auction_data = self.get_auction_data()
+
+		return self.last_modified
+
+
+	"""."""
+	def get_buyout_prices(self, item_id):
+		if not self.auction_data:
+			auction_data = self.get_auction_data()
+
+		return {auction['buyout']:auction['quantity'] for auction in self.auction_data}
+
+
+	"""."""
+	def get_auctions_by_player(self, player_name):
+		if not self.auction_data:
+			auction_data = self.get_auction_data()
+
+		return [auction for auction in self.auction_data if auction['owner'] == player_name]
+
+
+#
+class WoWPets:
+
+	"""."""
+	def __init__(self, api_key, locale="en_US", token=None):
+		# Check if the user-given locale is supported, i.e. is one of Blizzard's regions.
+		if locale not in accepted_locales:
+			raise ValueError("Not supported locale.")
+			return
+
+		if locale == "en_US":
+			self.root = "https://us.api.battle.net"
+
+		elif locale == "en_GB":
+			self.root = "https://eu.api.battle.net"
+
+		elif locale == "ko_KR":
+			self.root = "https://kr.api.battle.net"
+
+		# elif locale == "zh_TW":
+		# 	self.root = "https://tw.api.battle.net"
+
+		self.api_key = api_key
+		self.locale = locale
+
+		self.master_data = []
+
+		self.ability_data = {}
+		self.species_data = {}
+		self.stats_data = {}
+
+
+	"""."""
+	def _get_master_data_url(self):
+		url = "{root}/wow/pet/?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+	"""."""
+	def _get_ability_data_url(self, abilityId):
+		url = "{root}/wow/pet/ability/{abilityId}?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			abilityId = abilityId,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	"""."""
+	def _get_species_data_url(self, speciesId):
+		url = "{root}/wow/pet/species/{speciesId}?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			speciesId = speciesId,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	"""."""
+	def _get_stats_data_url(self, speciesId, level, breedId, qualityId):
+		url = "{root}/wow/pet/stats/{speciesId}?level={level}&breedId={breedId}&qualityId={qualityId}&locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			speciesId = speciesId,
+			level = level,
+			breedId = breedId,
+			qualityId = qualityId,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+### Retrieving the pets master list. ###
+
+	"""."""
+	def get_master_list(self):
+		try:
+			with urllib.request.urlopen(self._get_master_data_url()) as url:
+				self.master_data = json.loads(url.read().decode())['pets']
+
+			return self.master_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key.")
+			return
+
+
+	"""."""
+	def search_pet(self, pet_param):
+		if not self.master_data:
+			master_data = self.get_master_list()
+
+		if type(pet_param) == str:
+			return next((pet for pet in self.master_data if pet['name'] == pet_param), None)
+
+		elif type(pet_param) == int:
+			return next((pet for pet in self.master_data if pet['creatureId'] == pet_param), None)
+
+		else:
+			raise ValueError("Invalid parameters. Param PET must be a string (pet name), or an integer (creature ID).")
+			return
+
+
+	"""."""
+	def get_nameToID_dict(self):
+		if not self.master_data:
+			master_data = self.get_master_list()
+
+		return {pet['name']: pet['creatureId'] for pet in self.master_data}
+
+
+	"""."""
+	def get_battle_pets(self, as_names=False):
+		if not self.master_data:
+			master_data = self.get_master_list()
+
+		if as_names:
+			return [pet['name'] for pet in self.master_data if pet['canBattle']]
+
+		else:
+			return [pet for pet in self.master_data if pet['canBattle']]
+
+
+	"""."""
+	def get_nonbattle_pets(self, as_names=False):
+		if not self.master_data:
+			master_data = self.get_master_list()
+
+		if as_names:
+			return [pet['name'] for pet in self.master_data if not pet['canBattle']]
+
+		else:
+			return [pet for pet in self.master_data if not pet['canBattle']]
+
+
+	"""."""
+	def get_pet_stats(self, pet_param):
+		if not self.master_data:
+			master_data = self.get_master_list()
+
+		if type(pet_param) == str:
+			return next((pet['stats'] for pet in self.master_data if pet['name'] == pet_param), None)
+
+		elif type(pet_param) == int:
+			return next((pet['stats'] for pet in self.master_data if pet['creatureId'] == pet_param), None)
+
+		else:
+			raise ValueError("Invalid parameters. Param PET must be a string (pet name), or an integer (creature ID).")
+			return
+
+
+### Retrieving pet abilities data. ###
+	
+	"""."""
+	def get_ability_data(self, abilityId):
+		try:
+			with urllib.request.urlopen(self._get_ability_data_url(abilityId)) as url:
+				self.ability_data = json.loads(url.read().decode())
+
+			return self.ability_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or ability ID.")
+			return
+
+
+### Retrieving pet species data. ###
+
+	"""."""
+	def get_species_data(self, speciesId):
+		try:
+			with urllib.request.urlopen(self._get_species_data_url(speciesId)) as url:
+				self.species_data = json.loads(url.read().decode())
+
+			return self.species_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or ability ID.")
+			return
+
+
+### Retrieving species stat data. ###
+
+	"""."""
+	def get_species_stats_data(self, speciesId, level=1, breedId=3, qualityId=1):
+		try:
+			with urllib.request.urlopen(self._get_stats_data_url(speciesId, level, breedId, qualityId)) as url:
+				self.ability_data = json.loads(url.read().decode())
+
+			return self.ability_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or ability ID.")
+			return
+
+
+#
+class WoWPVP:
+
+	"""
+
+	   Currently not implemented due to the Blizzard API returning an empty dataset upon requests."""
+	def __init__(self, api_key, locale="en_US", token=None):
+		# Check if the user-given locale is supported, i.e. is one of Blizzard's regions.
+		if locale not in accepted_locales:
+			raise ValueError("Not supported locale.")
+			return
+
+		if locale == "en_US":
+			self.root = "https://us.api.battle.net"
+
+		elif locale == "en_GB":
+			self.root = "https://eu.api.battle.net"
+
+		elif locale == "ko_KR":
+			self.root = "https://kr.api.battle.net"
+
+		# elif locale == "zh_TW":
+		# 	self.root = "https://tw.api.battle.net"
+
+		self.api_key = api_key
+		self.locale = locale
+
+
+#
+class WoWGeneral:
+
+	"""."""
+	def __init__(self, api_key, locale="en_US", token=None):
+		# Check if the user-given locale is supported, i.e. is one of Blizzard's regions.
+		if locale not in accepted_locales:
+			raise ValueError("Not supported locale.")
+			return
+
+		if locale == "en_US":
+			self.root = "https://us.api.battle.net"
+
+		elif locale == "en_GB":
+			self.root = "https://eu.api.battle.net"
+
+		elif locale == "ko_KR":
+			self.root = "https://kr.api.battle.net"
+
+		# elif locale == "zh_TW":
+		# 	self.root = "https://tw.api.battle.net"
+
+		self.api_key = api_key
+		self.locale = locale
+
+		self.achievements_data = {}
+
+
+	"""
+
+	   e.g. https://us.api.battle.net/wow/achievement/2144?locale=en_US&apikey=..."""
+	def _get_achievement_data_url(self, achievement_id):
+		url = "{root}/wow/achievement/{achievement_id}/?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			achievement_id = achievement_id,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	""".
+
+	   e.g. https://us.api.battle.net/wow/boss/?locale=en_US&apikey=..."""
+	def _get_boss_master_url(self):
+		url = "{root}/wow/boss/?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	""".
+
+	   e.g. https://us.api.battle.net/wow/boss/24723?locale=en_US&apikey=..."""
+	def _get_boss_data_url(self):
+		url = "{root}/wow/boss/{boss_id}?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			boss_id = boss_id,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	""".
+
+	   e.g. https://us.api.battle.net/wow/item/18803?locale=en_US&apikey=..."""
+	def _get_item_data_url(self, item_id):
+		url = "{root}/wow/item/{item_id}/?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			item_id = item_id,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	""".
+
+	   e.g. https://us.api.battle.net/wow/item/set/1060?locale=en_US&apikey=..."""
+	def _get_item_set_data_url(self, set_id):
+		url = "{root}/wow/item/set/{set_id}/?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			set_id = set_id,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	""".
+
+	   e.g. https://us.api.battle.net/wow/mount/?locale=en_US&apikey=..."""
+	def _get_mount_master_url(self):
+		url = "{root}/wow/mount/?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	""".
+
+	   e.g. https://us.api.battle.net/wow/quest/13146?locale=en_US&apikey=..."""
+	def _get_quest_data_url(self, quest_id):
+		url = "{root}/wow/quest/{quest_id}/?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			quest_id = quest_id,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	""".
+
+	   e.g. https://us.api.battle.net/wow/realm/status?locale=en_US&apikey=..."""
+	def _get_realms_data_url(self):
+		url = "{root}/wow/realm/status?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	""".
+
+	   e.g. https://us.api.battle.net/wow/recipe/33994?locale=en_US&apikey=..."""
+	def _get_recipe_data_url(self, recipe_id):
+		url = "{root}/wow/recipe/{recipe_id}?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			recipe_id = recipe_id,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	""".
+
+	   e.g. https://us.api.battle.net/wow/spell/260997?locale=en_US&apikey=..."""
+	def _get_spell_data_url(self, spell_id):
+		url = "{root}/wow/spell/{spell_id}?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			spell_id = spell_id,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	""".
+
+	   e.g. https://us.api.battle.net/wow/zone/?locale=en_US&apikey=..."""
+	def _get_zone_master_url(self):
+		url = "{root}/wow/zone/?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	""".
+
+	   e.g. https://us.api.battle.net/wow/zone/4131?locale=en_US&apikey=..."""
+	def _get_zone_data_url(self, zone_id):
+		url = "{root}/wow/zone/{zone_id}?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			zone_id = zone_id,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+### Retrieving game achievements data. ###
+	
+	"""."""
+	def get_achievement_data(self, achievement_id):
+		try:
+			with urllib.request.urlopen(self._get_achievement_data_url(achievement_id)) as url:
+				self.achievement_data = json.loads(url.read().decode())
+
+			return self.achievement_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or Achievement ID.")
+			return
+
+
+### Retrieving game boss data. ###
+
+	"""."""
+	def get_bosses_data(self):
+		try:
+			with urllib.request.urlopen(self._get_boss_master_url()) as url:
+				self.bosses_data = json.loads(url.read().decode())
+
+			return self.bosses_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key.")
+			return
+
+
+	"""."""
+	def get_boss_info(self, boss_id):
+		try:
+			with urllib.request.urlopen(self._get_boss_data_url(boss_id)) as url:
+				self.boss_data = json.loads(url.read().decode())
+
+			return self.boss_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or Boss ID.")
+			return
+
+
+### Retrieving game item data. ###
+
+	"""."""
+	def get_item_data(self, item_id):
+		try:
+			with urllib.request.urlopen(self._get_item_data_url(item_id)) as url:
+				self.item_data = json.loads(url.read().decode())
+
+			return self.item_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or Boss ID.")
+			return
+
+
+	"""."""
+	def get_item_set_data(self, itemSet_id):
+		try:
+			with urllib.request.urlopen(self._get_item_set_data_url(set_id)) as url:
+				self.item_set_data = json.loads(url.read().decode())
+
+			return self.item_set_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or Boss ID.")
+			return
+
+
+### Retrieving game mount data. ###
+
+	"""."""
+	def get_mounts_data(self):
+		try:
+			with urllib.request.urlopen(self._get_mount_master_url()) as url:
+				self.mounts_data = json.loads(url.read().decode())
+
+			return self.mounts_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or Boss ID.")
+			return
+
+
+### Retrieving game quest data. ###
+
+	"""."""
+	def get_quest_data(self, quest_id):
+		try:
+			with urllib.request.urlopen(self._get_quest_data_url(quest_id)) as url:
+				self.quest_data = json.loads(url.read().decode())
+
+			return self.quest_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or Boss ID.")
+			return
+
+
+### Retrieving realm data. ###
+
+	"""."""
+	def get_realms_data(self):
+		try:
+			with urllib.request.urlopen(self._get_realms_data_url()) as url:
+				self.realms_data = json.loads(url.read().decode())
+
+			return self.realms_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or Boss ID.")
+			return
+
+
+### Retrieving game recipe data. ###
+
+	"""."""
+	def get_recipe_data(self, recipe_id):
+		try:
+			with urllib.request.urlopen(self._get_recipe_data_url(recipe_id)) as url:
+				self.recipe_data = json.loads(url.read().decode())
+
+			return self.recipe_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or Boss ID.")
+			return
+
+
+### Retrieving game spell data. ###
+
+	"""."""
+	def get_spell_data(self, spell_id):
+		try:
+			with urllib.request.urlopen(self._get_spell_data_url(spell_id)) as url:
+				self.spell_data = json.loads(url.read().decode())
+
+			return self.spell_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or Boss ID.")
+			return
+
+
+### Retrieving game zone data. ###
+
+	"""."""
+	def get_zones_data(self):
+		try:
+			with urllib.request.urlopen(self._get_zone_master_url()) as url:
+				self.zones_data = json.loads(url.read().decode())
+
+			return self.zones_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or Boss ID.")
+			return
+
+
+	"""."""
+	def get_zone_info(self, zone_id):
+		try:
+			with urllib.request.urlopen(self._get_zone_data_url(zone_id)) as url:
+				self.zone_data = json.loads(url.read().decode())
+
+			return self.zone_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or Boss ID.")
+			return
 
