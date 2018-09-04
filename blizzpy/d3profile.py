@@ -45,3 +45,73 @@ class D3Profile:
 		self.profile_data = {}
 
 
+	""".
+
+	   https://us.api.battle.net/d3/profile/1931/?locale=en_US&apikey=..."""
+	def _get_profile_data_url(self):
+		url = "{root}/d3/profile/{battle_tag}/?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			battle_tag = self.battle_tag,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	""".
+
+	   https://us.api.battle.net/d3/profile/1931/hero/1?locale=en_US&apikey=..."""
+	def _get_hero_data_url(self, hero_id):
+		url = "{root}/d3/profile/{battle_tag}/hero/{hero_id}?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			battle_tag = self.battle_tag,
+			hero_id = hero_id,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	""".
+
+	   https://us.api.battle.net/d3/profile/1931/hero/1/items?locale=en_US&apikey=..."""
+	def get_hero_items_data_url(self, hero_id):
+		url = "{root}/d3/profile/{battle_tag}/hero/{hero_id}/items?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			battle_tag = self.battle_tag,
+			hero_id = hero_id,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+	""".
+
+	   https://us.api.battle.net/d3/profile/1931/hero/1/follower-items?locale=en_US&apikey=..."""
+	def get_follower_items_data_url(self, hero_id):
+		url = "{root}/d3/profile/{battle_tag}/hero/{hero_id}/follower-items?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			battle_tag = self.battle_tag,
+			hero_id = hero_id,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+### Retrieving profile data. ###
+
+
+### Retrieving hero data. ###
+
+
+### Retrieving item data. ###
+
+
+
+
