@@ -43,6 +43,9 @@ class D3Profile:
 		self.locale = locale
 
 		self.profile_data = {}
+		self.hero_data = {}
+		self.hero_items_data = {}
+		self.follower_items_data = {}
 
 
 	""".
@@ -77,7 +80,7 @@ class D3Profile:
 	""".
 
 	   https://us.api.battle.net/d3/profile/1931/hero/1/items?locale=en_US&apikey=..."""
-	def get_hero_items_data_url(self, hero_id):
+	def _get_hero_items_data_url(self, hero_id):
 		url = "{root}/d3/profile/{battle_tag}/hero/{hero_id}/items?locale={locale}&apikey={api_key}".format(
 			root = self.root,
 			battle_tag = self.battle_tag,
@@ -92,7 +95,7 @@ class D3Profile:
 	""".
 
 	   https://us.api.battle.net/d3/profile/1931/hero/1/follower-items?locale=en_US&apikey=..."""
-	def get_follower_items_data_url(self, hero_id):
+	def _get_follower_items_data_url(self, hero_id):
 		url = "{root}/d3/profile/{battle_tag}/hero/{hero_id}/follower-items?locale={locale}&apikey={api_key}".format(
 			root = self.root,
 			battle_tag = self.battle_tag,
@@ -106,12 +109,58 @@ class D3Profile:
 
 ### Retrieving profile data. ###
 
+	"""."""
+	def get_profile_data(self):
+		try:
+			with urllib.request.urlopen(self._get_profile_data_url()) as url:
+				self.profile_data = json.loads(url.read().decode())
+
+			return self.profile_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
+
 
 ### Retrieving hero data. ###
+
+	"""."""
+	def get_hero_data(self, hero_id):
+		try:
+			with urllib.request.urlopen(self._get_hero_data_url(hero_id)) as url:
+				self.hero_data = json.loads(url.read().decode())
+
+			return self.hero_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
 
 
 ### Retrieving item data. ###
 
+	"""."""
+	def get_hero_items_data(self, hero_id):
+		try:
+			with urllib.request.urlopen(self._get_hero_items_data_url(hero_id)) as url:
+				self.hero_items_data = json.loads(url.read().decode())
+
+			return self.hero_items_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
 
 
+	"""."""
+	def get_follower_items_data(self, hero_id):
+		try:
+			with urllib.request.urlopen(self._get_follower_items_data_url(hero_id)) as url:
+				self.follower_items_data = json.loads(url.read().decode())
+
+			return self.follower_items_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key, profile ID, region ID, or profile name.")
+			return
 
