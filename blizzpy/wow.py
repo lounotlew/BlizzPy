@@ -189,7 +189,7 @@ class WoWCharacter:
 
 
 	"""Return self.characterName's total achievement points."""
-	def get_achPoints(self):
+	def get_achievement_points(self):
 		if not self.character_data:
 			char_data = self.get_character_data()
 
@@ -218,7 +218,7 @@ class WoWCharacter:
 	         criteriaQuantity: 
 	         criteriaTimestamp: 
 	         criteriaCreated: """
-	def get_achievement_data(self):
+	def get_achievements_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("achievements")) as url:
 				self.ach_data = json.loads(url.read().decode())['achievements']
@@ -248,7 +248,10 @@ class WoWCharacter:
 		else:
 			return df
 
-	# More?
+	
+	"""."""
+	def has_achievement(self, achievement_id):
+		return
 
 
 ### Retrieving the character's appearance data. ###
@@ -300,7 +303,7 @@ class WoWCharacter:
 
 
 	"""Return self.characterName's hair color integer."""
-	def get_haircolor(self):
+	def get_hair_color(self):
 		if not self.appearance_data:
 			appearance_data = self.get_appearance_data()
 
@@ -354,7 +357,7 @@ class WoWCharacter:
 
 
 	"""."""
-	def get_guild_ach_points(self):
+	def get_guild_achievement_points(self):
 		if not self.guild_data:
 			guild_data = self.get_appearance_data()
 
@@ -397,8 +400,7 @@ class WoWCharacter:
 		if not self.hunter_pet_data:
 			hunter_pet_data = self.get_hunter_pet_data()
 
-		else:
-			return [pet['name'] for pet in self.hunter_pet_data]
+		return [pet['name'] for pet in self.hunter_pet_data]
 
 
 	"""Return the first element of self.hunter_pet_data whose 'name' key matches PET_NAME.
@@ -453,7 +455,7 @@ class WoWCharacter:
 ### Retrieving the character's mounts data. ###
 
 	"""."""
-	def get_mount_data(self):
+	def get_mounts_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("mounts")) as url:
 				self.mounts_data = json.loads(url.read().decode())['mounts']
@@ -466,7 +468,7 @@ class WoWCharacter:
 
 
 	"""."""
-	def get_mount(self, mount_name):
+	def search_mount(self, mount_name):
 		if not self.mounts_data:
 			mounts_data = self.get_mounts_data()
 
@@ -893,7 +895,7 @@ class WoWCharacter:
 
 
 	"""."""
-	def get_reputations(self):
+	def get_reputation_factions(self):
 		if not self.rep_data:
 			rep_data = self.get_reputation_data()
 
@@ -1071,31 +1073,33 @@ class WoWCharacter:
 		if not self.talents_data:
 			talents_data = self.get_talents_data()
 
-		if spec.lower() not in class_to_spec[int_to_class[str(character_data['class'])]]:
+		if spec.lower() not in class_to_spec[int_to_class[str(self.character_data['class'])]]:
 			raise ValueError("This character's class does not have that spec.")
-			return
-
-		return [talents['talents']['spell']['name'] for talents in self.talents_data if talents['talents']['spec']['name'].lower() == spec.lower()]
-
-
-	"""."""
-	def get_tier_talents(self, tier, spec):
-		if not self.talents_data:
-			talents_data = self.get_talents_data()
-
-		if spec.lower() not in class_to_spec[self.get_class()]:
-			raise ValueError(self.characterName + "'s class does not have that spec.")
-			return
-
-		if tier not in [1, 2, 3, 4, 5, 6, 7]:
-			raise ValueError("Please select a valid talent tier (1-7).")
 			return
 
 		spec_talents = next((talents for talents in self.talents_data if talents['talents'][0]['spec']['name'].lower() == spec.lower()), None)['talents']
 
-		tier_talent = next((talent['spell']['name'] for talent in spec_talents if talent['tier'] == tier-1), None)
+		return {talent['tier']+1:talent['spell']['name'] for talent in spec_talents}
 
-		return tier_talent
+
+	# """."""
+	# def get_tier_talents(self, tier, spec):
+	# 	if not self.talents_data:
+	# 		talents_data = self.get_talents_data()
+
+	# 	if spec.lower() not in class_to_spec[self.get_class()]:
+	# 		raise ValueError(self.characterName + "'s class does not have that spec.")
+	# 		return
+
+	# 	if tier not in [1, 2, 3, 4, 5, 6, 7]:
+	# 		raise ValueError("Please select a valid talent tier (1-7).")
+	# 		return
+
+	# 	spec_talents = next((talents for talents in self.talents_data if talents['talents'][0]['spec']['name'].lower() == spec.lower()), None)['talents']
+
+	# 	tier_talent = next((talent['spell']['name'] for talent in spec_talents if talent['tier'] == tier-1), None)
+
+	# 	return tier_talent
 
 
 ### Retrieving the character's titles data. ###
@@ -1114,7 +1118,7 @@ class WoWCharacter:
 
 
 	"""."""
-	def get_titles(self):
+	def get_title_names(self):
 		if not self.titles_data:
 			titles_data = self.get_titles_data()
 
@@ -1730,7 +1734,7 @@ class WoWPVP:
 
 
 #
-class WoWGeneral:
+class WoWResources:
 
 	"""."""
 	def __init__(self, api_key, locale="en_US", token=None):
