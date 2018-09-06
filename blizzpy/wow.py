@@ -1337,7 +1337,7 @@ class WoWGuild:
 ### Retrieving guild achievements data. ###
 
 	"""."""
-	def get_guild_achievements_data(self):
+	def get_achievements_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("achievements")) as url:
 				self.ach_data = json.loads(url.read().decode())['achievements']
@@ -1350,7 +1350,7 @@ class WoWGuild:
 
 
 	"""."""
-	def guild_has_achievement(self, achievement_id):
+	def has_achievement(self, achievement_id):
 		if not self.ach_data:
 			ach_data = self.get_guild_achievements_data()
 
@@ -1444,6 +1444,7 @@ class WoWAuction:
 		self.locale = locale
 
 		self.last_modified = 0
+		self.auction_data = []
 
 
 	"""."""
@@ -1485,11 +1486,15 @@ class WoWAuction:
 
 
 	"""."""
-	def get_buyout_prices(self, item_id):
+	def get_buyout_prices(self, item_id, in_gold=False):
 		if not self.auction_data:
 			auction_data = self.get_auction_data()
 
-		return {auction['buyout']:auction['quantity'] for auction in self.auction_data}
+		if in_gold:
+			return {round(auction['buyout']/10000, 4):auction['quantity'] for auction in self.auction_data if auction['item'] == item_id}
+
+		else:
+			return {auction['buyout']:auction['quantity'] for auction in self.auction_data if auction['item'] == item_id}
 
 
 	"""."""
@@ -1608,7 +1613,7 @@ class WoWPets:
 			return next((pet for pet in self.master_data if pet['creatureId'] == pet_param), None)
 
 		else:
-			raise ValueError("Invalid parameters. Param PET must be a string (pet name), or an integer (creature ID).")
+			raise ValueError("Invalid parameters. PET_PARAM must be a string (pet name), or an integer (creature ID).")
 			return
 
 
@@ -1708,9 +1713,7 @@ class WoWPets:
 #
 class WoWPVP:
 
-	"""
-
-	   Currently not implemented due to the Blizzard API returning an empty dataset upon requests."""
+	"""."""
 	def __init__(self, api_key, locale="en_US", token=None):
 		# Check if the user-given locale is supported, i.e. is one of Blizzard's regions.
 		if locale not in accepted_locales:
@@ -1731,6 +1734,124 @@ class WoWPVP:
 
 		self.api_key = api_key
 		self.locale = locale
+
+		self.pvp_2v2_data = {}
+		self.pvp_3v3_data = {}
+		self.pvp_rbg_data = {}
+
+
+	""".
+
+	   https://us.api.battle.net/wow/leaderboard/2v2?locale=en_US&apikey=..."""
+	def _get_pvp_data_url(self, bracket):
+		url = "{root}/wow/leaderboard/{bracket}?locale={locale}&apikey={api_key}".format(
+			root = self.root,
+			bracket = bracket,
+			locale = self.locale,
+			api_key = self.api_key
+			)
+
+		return url
+
+
+### Retrieving 2v2 arena data. ###
+
+	"""."""
+	def get_2v2_data(self):
+		try:
+			with urllib.request.urlopen(self._get_pvp_data_url("2v2")) as url:
+				self.pvp_2v2_data = json.loads(url.read().decode())
+
+			return self.pvp_2v2_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or Achievement ID.")
+			return
+
+
+	"""."""
+	def search_2v2_player(self, player_name):
+		if not self.pvp_2v2_data:
+			self.get_2v2_data()
+
+		return next((player for player in self.pvp_2v2_data['rows'] if player['name'] == player_name), None)
+
+
+	"""."""
+	def search_2v2_players_by_rank(self, rank, as_names=False):
+		if not self.pvp_2v2_data:
+			self.get_2v2_data()
+
+		if as_names:
+			return [player['name'] for player in self.pvp_2v2_data['rows'] if player['ranking'] == rank]
+
+		else:
+			return [player for player in self.pvp_2v2_data['rows'] if player['ranking'] == rank]
+
+
+### Retrieving 3v3 arena data. ###
+
+	"""."""
+	def get_3v3_data(self):
+		try:
+			with urllib.request.urlopen(self._get_pvp_data_url("3v3")) as url:
+				self.pvp_3v3_data = json.loads(url.read().decode())
+
+			return self.pvp_3v3_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or Achievement ID.")
+			return
+
+
+	"""."""
+	def search_3v3_player(self, player_name):
+		if not self.pvp_2v2_data:
+			self.get_2v2_data()
+
+		return next((player for player in self.pvp_3v3_data['rows'] if player['name'] == player_name), None)
+
+
+	"""."""
+	def search_3v3_player_by_rank(self, rank):
+		if not self.pvp_2v2_data:
+			self.get_2v2_data()
+
+		return [player for player in self.pvp_3v3_data['rows'] if player['ranking'] == rank]
+
+
+	"""."""
+
+
+### Retrieving RBG data. ###
+
+	"""."""
+	def get_rbg_data(self):
+		try:
+			with urllib.request.urlopen(self._get_pvp_data_url("rbg")) as url:
+				self.pvp_rbg_data = json.loads(url.read().decode())
+
+			return self.pvp_rbg_data
+
+		except:
+			raise ValueError("Could not retrieve data. Please check your API key or Achievement ID.")
+			return
+
+
+	"""."""
+	def search_rbg_player(self, player_name):
+		if not self.pvp_2v2_data:
+			self.get_2v2_data()
+
+		return next((player for player in self.pvp_rbg_data['rows'] if player['name'] == player_name), None)
+
+
+	"""."""
+	def search_rbg_player_by_rank(self, rank):
+		if not self.pvp_2v2_data:
+			self.get_2v2_data()
+
+		return [player for player in self.pvp_rbg_data['rows'] if player['ranking'] == rank]
 
 
 #
@@ -1791,7 +1912,7 @@ class WoWResources:
 	""".
 
 	   e.g. https://us.api.battle.net/wow/boss/24723?locale=en_US&apikey=..."""
-	def _get_boss_data_url(self):
+	def _get_boss_data_url(self, boss_id):
 		url = "{root}/wow/boss/{boss_id}?locale={locale}&apikey={api_key}".format(
 			root = self.root,
 			boss_id = boss_id,
