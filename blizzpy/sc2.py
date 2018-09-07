@@ -8,6 +8,7 @@
 # Written by Lewis Kim.                          #
 ##################################################
 
+import requests
 import urllib, json
 
 # Accepted API locales. zh_TW has been excluded for now due to continuous "503 Service Unavailable" errors from the Blizzard API.
@@ -130,7 +131,7 @@ class SC2Profile:
 
 
 	"""."""
-	def get_profile_career_data(self):
+	def get_profile_career(self):
 		if not self.profile_data:
 			profile_data = self.get_profile_data()
 
@@ -217,27 +218,27 @@ class SC2Profile:
 
 
 	"""."""
-	def get_profile_achievements(self, as_df=False):
+	def get_profile_achievements(self):
 		if not self.profile_data:
 			profile_data = self.get_profile_data()
 
 		return self.profile_data['achievements']
 
 
-	"""."""
-	def get_total_achievement_points(self):
-		if not self.profile_data:
-			profile_data = self.get_profile_data()
+	# """."""
+	# def get_total_achievement_points(self):
+	# 	if not self.profile_data:
+	# 		profile_data = self.get_profile_data()
 
-		return self.profile_data['achievements']['points']['totalPoints']
+	# 	return self.profile_data['achievements']['points']['totalPoints']
 
 
-	"""."""
-	def get_achievement_points_by_category(self):
-		if not self.profile_data:
-			profile_data = self.get_profile_data()
+	# """."""
+	# def get_achievement_points_by_category(self):
+	# 	if not self.profile_data:
+	# 		profile_data = self.get_profile_data()
 
-		return self.profile_data['achievements']['points']['categoryPoints']
+	# 	return self.profile_data['achievements']['points']['categoryPoints']
 
 
 	"""."""
@@ -269,6 +270,9 @@ class SC2Profile:
 	def get_current_ladder(self):
 		if not self.ladders_data:
 			ladders_data = self.get_profile_ladder_data()
+
+		if not self.ladders_data['currentSeason']:
+			return None
 
 		return self.ladders_data['currentSeason'][0]['ladder'][0]
 
@@ -315,9 +319,7 @@ class SC2Profile:
 		if not self.match_history:
 			match_history = self.get_match_history_data()
 
-		num_games = len(self.match_history['matches'])
-
-		return num_games
+		return len(self.match_history['matches'])
 
 
 	"""."""
