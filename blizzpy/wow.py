@@ -69,13 +69,14 @@ class WoWCharacter:
 		# elif locale == "zh_TW":
 		# 	self.root = "https://tw.api.battle.net"
 
+		# Basic attributes for request URLs.
 		self.api_key = api_key
 		self.locale = locale
 
 		self.characterName = characterName
 		self.realm = realm
 
-		#
+		# Initially empty datasets for the API data.
 		self.character_data = {}
 		self.ach_data = {}
 		self.appearance_data = {}
@@ -89,7 +90,6 @@ class WoWCharacter:
 		self.statistics_data = {}
 		self.stats_data = {}
 
-		#
 		self.feed_data = []
 		self.raid_prog_data = []
 		self.quests_data = []
@@ -98,13 +98,7 @@ class WoWCharacter:
 		self.titles_data = []
 
 
-
-	"""."""
-	def _api_request(self, endpoint):
-		return
-
-
-	"""."""
+	"""Returns the request URL that fetches the .json data from the Blizzard API."""
 	def _get_data_url(self):
 		url = "{root}/wow/character/{realm}/{characterName}?locale={locale}&apikey={api_key}".format(
 			root = self.root,
@@ -117,7 +111,7 @@ class WoWCharacter:
 		return url
 
 
-	"""."""
+	"""Returns the request URL with a field that fetches the .json data from the Blizzard API."""
 	def _get_data_with_field_url(self, field):
 		url = "{root}/wow/character/{realm}/{characterName}?fields={field}&locale={locale}&apikey={api_key}".format(
 			root = self.root,
@@ -212,12 +206,9 @@ class WoWCharacter:
 
 	"""Return self.characterName's achievements data as a dictionary, decoded from json.
 
-	   Keys: achievementsCompleted:
-	         achievementsCompletedTimestamp: 
-	         criteria: 
-	         criteriaQuantity: 
-	         criteriaTimestamp: 
-	         criteriaCreated: """
+	   Keys: 
+	   achievementsCompleted, achievementsCompletedTimestamp, criteria, criteriaQuantity,
+	   criteriaTimestamp, criteriaCreated"""
 	def get_achievements_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("achievements")) as url:
@@ -242,8 +233,7 @@ class WoWCharacter:
 							'achievementsCompletedTimestamp': pd.Series(self.ach_data['achievementsCompletedTimestamp'])})
 
 		if ascending_time:
-			#sort
-			return
+			return df.sort_values('achievementsCompletedTimestamp')
 
 		else:
 			return df
@@ -259,13 +249,8 @@ class WoWCharacter:
 	"""Return self.characterName's appearance data as a dictionary, decoded from json.
 	   Appearance refers to character features, such as face/haircolor, not transmog.
 
-	   Keys: skinColor:
-	         hairVariation: 
-	         hairColor: 
-	         featureVariation: 
-	         showHelm: 
-	         showCloak: 
-	         customDisplayOptions: """
+	   Keys: skinColor, hairVariation, hairColor, featureVariation, showHelm, showCloak, 
+	         customDisplayOptions"""
 	def get_appearance_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("appearance")) as url:
@@ -312,7 +297,7 @@ class WoWCharacter:
 
 ### Retrieving the character's feed (activity) data. ###
 
-	"""Return the """
+	"""Return Return self.characterName's activity data as a dictionary, decoded from json."""
 	def get_feed_data(self, as_df=False):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("feed")) as url:
@@ -327,7 +312,7 @@ class WoWCharacter:
 
 ### Retrieving the character's guild data. ###
 
-	"""."""
+	"""Return self.characterName's guild data as a dictionary, decoded from json."""
 	def get_guild_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("guild")) as url:
@@ -340,7 +325,7 @@ class WoWCharacter:
 			return
 
 	
-	"""."""
+	"""Return the name of the guild self.characterName is a part of."""
 	def get_guild_name(self):
 		if not self.guild_data:
 			guild_data = self.get_appearance_data()
@@ -348,7 +333,7 @@ class WoWCharacter:
 		return self.guild_data['name']
 
 
-	"""."""
+	"""Return the number of members in the guild self.characterName is a part of."""
 	def get_num_guild_members(self):
 		if not self.guild_data:
 			guild_data = self.get_appearance_data()
@@ -356,7 +341,7 @@ class WoWCharacter:
 		return self.guild_data['members']
 
 
-	"""."""
+	"""Return the number of achievements the guild self.characterName is a part of has."""
 	def get_guild_achievement_points(self):
 		if not self.guild_data:
 			guild_data = self.get_appearance_data()
@@ -366,7 +351,7 @@ class WoWCharacter:
 
 ### Retrieving the character's hunter pet data, given that the character is a hunter. ###
 
-	"""...
+	"""Return self.characterName's hunter pets data, decoded from json.
 
 	   Returns a list of dictionaries containing data on each of self.characterName's pets."""
 	def get_hunter_pet_data(self):
