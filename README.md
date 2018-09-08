@@ -9,7 +9,7 @@ BlizzPy is a Blizzard API wrapper for Python. It fetches the raw json data from 
 
 BlizzPy currently supports the WoW Community API, SC2 Community API, and D3 Community API (for US, EU, and KR), with the Game Data API and WoW Game Data API being added very soon.
 
-To view documentation, please visit [BlizzPy-Docs](https://github.com/lounotlew/BlizzPy-Docs).
+Click [here](https://github.com/lounotlew/BlizzPy/tree/master/docs) to view documentations for BlizzPy.
 
 ### Installation
 

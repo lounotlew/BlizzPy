@@ -1184,7 +1184,7 @@ class WoWGuild:
 	def _get_data_url(self):
 		url = "{root}/wow/guild/{realm}/{guild_name}?locale={locale}&apikey={api_key}".format(
 			root = self.root,
-			realm = self.realm,
+			realm = self.realm.realm.replace(" ", "%20"),
 			guild_name = self.guild_name.replace(" ", "%20"),
 			locale = self.locale,
 			api_key = self.api_key
@@ -1197,7 +1197,7 @@ class WoWGuild:
 	def _get_data_with_field_url(self, field):
 		url = "{root}/wow/guild/{realm}/{guild_name}?fields={field}&locale={locale}&apikey={api_key}".format(
 			root = self.root,
-			realm = self.realm,
+			realm = self.realm.replace(" ", "%20"),
 			guild_name = self.guild_name.replace(" ", "%20"),
 			field = field,
 			locale = self.locale,
