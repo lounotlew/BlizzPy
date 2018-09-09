@@ -547,7 +547,7 @@ class SC2Resources:
 
 
 	"""."""
-	def get_achievement_nameID_dict(self):
+	def get_achievement_nameToID_dict(self):
 		if not self.achievements_data:
 			self.get_achievements_data()
 
@@ -571,7 +571,7 @@ class SC2Resources:
 
 
 	"""."""
-	def search_reward_by_id(self, reward_id):
+	def get_reward_by_id(self, reward_id):
 		if not self.achievements_data:
 			self.get_rewards_data()
 
@@ -584,7 +584,7 @@ class SC2Resources:
 
 
 	"""."""
-	def search_reward_by_name(self, reward_name):
+	def get_reward_by_name(self, reward_name):
 		if not self.achievements_data:
 			self.get_rewards_data()
 
@@ -610,7 +610,7 @@ class SC2Resources:
 
 
 	"""."""
-	def get_terranDecals(self):
+	def get_terranDecals(self, as_names=False):
 		if not self.achievements_data:
 			self.get_rewards_data()
 
@@ -622,7 +622,7 @@ class SC2Resources:
 
 
 	"""."""
-	def get_zergDecals(self):
+	def get_zergDecals(self, as_names=False):
 		if not self.achievements_data:
 			self.get_rewards_data()
 
@@ -634,7 +634,7 @@ class SC2Resources:
 
 
 	"""."""
-	def get_protossDecals(self):
+	def get_protossDecals(self, as_names=False):
 		if not self.achievements_data:
 			self.get_rewards_data()
 
@@ -646,7 +646,7 @@ class SC2Resources:
 
 
 	"""."""
-	def get_skins(self):
+	def get_skins(self, as_names=False):
 		if not self.achievements_data:
 			self.get_rewards_data()
 
@@ -658,7 +658,7 @@ class SC2Resources:
 
 
 	"""."""
-	def get_animations(self):
+	def get_animations(self, as_names=False):
 		if not self.achievements_data:
 			self.get_rewards_data()
 

@@ -334,7 +334,7 @@ MyCharacter.get_ilvl()
 
 ``PARAMS``: None
 
-Returns an ``int`` of the selected character's item level.
+Returns a ``tuple``. The first element is an ``int`` of the selected character's total item level, and the second element is an ``int`` of the selected character's equipped item level.
 
 **3) Selected character's item in a specific slot.**
 
@@ -406,7 +406,17 @@ Keys in returned dictionary:
 - ``isAquatic``:
 - ``isJumping``:
 
-**3) Selected character's ground mounts.**
+**3) Selected character's mounts' names.**
+
+```python
+MyCharacter.get_mount_names()
+```
+
+``PARAMS``: None
+
+Returns a list of ``str`` of the character's mounts' names.
+
+**4) Selected character's ground mounts.**
 
 ```python
 MyCharacter.get_ground_mounts()
@@ -416,7 +426,7 @@ MyCharacter.get_ground_mounts()
 
 Returns a list of ``str`` of the character's ground mounts' names. Can intersect with flying mounts.
 
-**4) Selected character's flying mounts.**
+**5) Selected character's flying mounts.**
 
 ```python
 MyCharacter.get_flying_mounts()
@@ -459,7 +469,7 @@ MyCharacter.get_percent_collected()
 
 ``PARAMS``: None
 
-Returns an ``int`` of the percentage (e.g. 53 for 53%).
+Returns an ``int`` of the percentage (e.g. 53 for 53%) of pets owned.
 
 **4) Selected character's non-hunter pets' names.**
 

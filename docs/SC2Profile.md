@@ -20,13 +20,13 @@ Example:
 For a player named "Hazzah" in "en_US",
 
 ```python
-MyCharacter = SC2Profile(api_key="SOME_API_KEY", realm="proudmoore")
+MyProfile = SC2Profile(api_key="SOME_API_KEY", profile_id=123456, profile_name="Hazzah")
 ```
 
-Or, for a player named "Hoozah" in "eu_GB",
+Or, for a player named "Hoozah" in "en_GB",
 
 ```python
-MyCharacter = SC2Profile(api_key="SOME_API_KEY", realm="Tarren-Mill", locale="eu_GB")
+MyProfile = SC2Profile(api_key="SOME_API_KEY", profile_id=123456, profile_name="Hazzah", locale="eu_GB")
 ```
 
 To get a profile's ``profile_id`` and ``region_id``, search the player's name and look at the URLs to find them (``region_id`` is a single digit, while ``profile_id`` is 5-6 digits).

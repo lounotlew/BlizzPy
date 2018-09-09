@@ -404,7 +404,7 @@ class WoWCharacter:
 
 ### Retrieving the character's equiped items data. ###
 
-	"""."""
+	"""Return self.characterName's items data, decoded from json."""
 	def get_items_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("items")) as url:
@@ -426,7 +426,7 @@ class WoWCharacter:
 		return self.items_data['averageItemLevel'], self.items_data['averageItemLevelEquipped']
 
 
-	"""."""
+	"""Returns a dictionary containing information about the gear in SLOT_NAME."""
 	def get_gear_piece(self, slot_name):
 		if not self.items_data:
 			items_data = self.get_items_data()
@@ -439,7 +439,7 @@ class WoWCharacter:
 
 ### Retrieving the character's mounts data. ###
 
-	"""."""
+	"""Return self.characterName's mounts data, decoded from json."""
 	def get_mounts_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("mounts")) as url:
@@ -452,7 +452,7 @@ class WoWCharacter:
 			return
 
 
-	"""."""
+	"""Returns a dictionary containing information about the selected mount MOUNT_NAME."""
 	def search_mount(self, mount_name):
 		if not self.mounts_data:
 			mounts_data = self.get_mounts_data()
@@ -466,7 +466,7 @@ class WoWCharacter:
 		return None
 
 
-	"""."""
+	"""Returns a list of the character's mounts' names."""
 	def get_mount_names(self):
 		if not self.mounts_data:
 			mounts_data = self.get_mounts_data()
@@ -476,7 +476,7 @@ class WoWCharacter:
 		return [mount['name'] for mount in all_mounts]
 
 
-	"""."""
+	"""Returns a list of the character's ground mounts' names. Can intersect with flying mounts."""
 	def get_ground_mounts(self):
 		if not self.mounts_data:
 			mounts_data = self.get_mounts_data()
@@ -486,7 +486,7 @@ class WoWCharacter:
 		return [mount for mount in all_mounts if mount['isGround'] == True]
 
 
-	"""."""
+	"""Returns a list of the character's flying mounts' names. Can intersect with ground mounts."""
 	def get_flying_mounts(self):
 		if not self.mounts_data:
 			mounts_data = self.get_mounts_data()
@@ -498,7 +498,7 @@ class WoWCharacter:
 
 ### Retrieving the character's non-hunter pets data. ###
 
-	"""."""
+	"""Return self.characterName's non-hunter pets data, decoded from json."""
 	def get_pets_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("pets")) as url:
@@ -513,7 +513,7 @@ class WoWCharacter:
 			return
 
 
-	"""."""
+	"""Returns the number of non-hunter pets the selected character owns."""
 	def get_num_pets(self):
 		if not self.pets_data:
 			pets_data = self.get_pets_data()
@@ -521,7 +521,7 @@ class WoWCharacter:
 		return self.pets_data['numCollected']
 
 
-	"""."""
+	"""Returns the percentage of all pets owned."""
 	def get_percent_collected(self):
 		if not self.pets_data:
 			pets_data = self.get_pets_data()
@@ -531,14 +531,14 @@ class WoWCharacter:
 		return perc
 
 
-	"""."""
+	"""Returns a list of the names of the owned pets."""
 	def get_pet_names(self):
 		if not self.pets_data:
 			pets_data = self.get_pets_data()
 		return [pet['name'] for pet in self.pets_data['collected']]
 
 
-	"""."""
+	"""Returns a list of the creatureIDs of the owned pets."""
 	def get_pet_ids(self):
 		if not self.pets_data:
 			pets_data = self.get_pets_data()
@@ -546,7 +546,8 @@ class WoWCharacter:
 		return [pet['creatureID'] for pet in self.pets_data['collected']]
 
 
-	"""."""
+	"""Returns a list of the favorited pets' names if as_names=True. Else, returns a
+	   list of dictionaries containing information about favorited pets."""
 	def get_favorite_pets(self, as_names=True):
 		if not self.pets_data:
 			pets_data = self.get_pets_data()
@@ -560,7 +561,7 @@ class WoWCharacter:
 		return favorite_pets		
 
 
-	"""."""
+	"""Returns the pet quality integer of PET_NAME."""
 	def get_pet_quality(self, pet_name):
 		if not self.pets_data:
 			pets_data = self.get_pets_data()
@@ -570,8 +571,7 @@ class WoWCharacter:
 		return quality
 		
 
-
-	"""."""
+	"""Returns a dictionary containing stats information about PET_NAME."""
 	def get_pet_stats(self, pet_name):
 		if not self.pets_data:
 			pets_data = self.get_pets_data()
@@ -583,7 +583,7 @@ class WoWCharacter:
 
 ### Retrieving the character's professions data. ###
 
-	"""."""
+	"""Return self.characterName's professions data, decoded from json."""
 	def get_professions_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("professions")) as url:
@@ -596,7 +596,8 @@ class WoWCharacter:
 			return
 
 
-	"""."""
+	"""Returns a dictionary whose keys are the character's primary profession names,
+	   and values are the ranks associated with that profession."""
 	def get_primary_professions(self):
 		if not self.professions_data:
 			professions_data = self.professions_data
@@ -609,7 +610,8 @@ class WoWCharacter:
 		return {prof['name']: prof['rank'] for prof in primary_profs}
 
 
-	"""."""
+	"""Returns a dictionary whose keys are the character's secondary profession names,
+	   and values are the ranks associated with that profession."""
 	def get_secondary_professions(self):
 		if not self.professions_data:
 			professions_data = self.professions_data
@@ -624,7 +626,7 @@ class WoWCharacter:
 
 ### Retrieving the character's raid progression data. ###
 
-	"""."""
+	"""Return self.characterName's raid progression data, decoded from json."""
 	def get_raid_prog_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("progression")) as url:
@@ -727,9 +729,7 @@ class WoWCharacter:
 
 ### Retrieving the character's PVP statistics. ###
 
-	"""
-
-	   Returns"""
+	"""Return self.characterName's PVP data, decoded from json."""
 	def get_pvp_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("pvp")) as url:
@@ -866,7 +866,7 @@ class WoWCharacter:
 
 ### Retrieving the character's reputations data. ###
 
-	"""."""
+	"""Return self.characterName's reputations data, decoded from json."""
 	def get_reputation_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("reputation")) as url:
@@ -980,7 +980,7 @@ class WoWCharacter:
 
 ### Retrieving the character's quests data. ###
 
-	"""."""
+	"""Return self.characterName's quests data, decoded from json."""
 	def get_quests_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("quests")) as url:
@@ -1007,7 +1007,7 @@ class WoWCharacter:
 
 ### Retrieving the character's gameplay statistics (most used X, least used Y, etc.). ###
 
-	"""."""
+	"""Return self.characterName's gameplay statistics data, decoded from json."""
 	def get_statistics_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("statistics")) as url:
@@ -1022,7 +1022,7 @@ class WoWCharacter:
 
 ### Retrieving the character's in-game stats (Str, Int, Agi, etc.). ###
 
-	"""."""
+	"""Return self.characterName's in-game stats data, decoded from json."""
 	def get_stats_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("stats")) as url:
@@ -1037,7 +1037,7 @@ class WoWCharacter:
 
 ### Retrieving the character's talents. ###
 
-	"""."""
+	"""Return self.characterName's talents data, decoded from json."""
 	def get_talents_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("talents")) as url:
@@ -1089,7 +1089,7 @@ class WoWCharacter:
 
 ### Retrieving the character's titles data. ###
 
-	"""."""
+	"""Return self.characterName's titles data, decoded from json."""
 	def get_titles_data(self):
 		try:
 			with urllib.request.urlopen(self._get_data_with_field_url("titles")) as url:
