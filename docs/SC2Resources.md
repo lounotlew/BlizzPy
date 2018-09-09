@@ -55,7 +55,7 @@ MyResources.get_achievement_names()
 
 Returns a list of ``str`` names of all available achievements in SC2.
 
-**2) Achievment name to ID dictionary.
+**3) Achievment name to ID dictionary.**
 
 ```python
 MyResources.get_achievement_nameToID_dict()
@@ -79,7 +79,7 @@ Returns a dictionary. Contains unchanged raw Blizzard API data read from the jso
 
 See https://dev.battle.net/io-docs for details.
 
-**2) Searching a reward by its ID. **
+**2) Searching a reward by its ID.**
 
 ```python
 MyResources.get_reward_by_id(reward_id)
