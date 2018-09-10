@@ -30,4 +30,4 @@ _*Currently there are only methods for retrieving raw API data in D3Profile and 
 
 - [D3Profile](https://github.com/lounotlew/BlizzPy/blob/master/docs/D3Profile.md): Wrapper for D3 player profile data.
 - [D3Resources](https://github.com/lounotlew/BlizzPy/blob/master/docs/D3Resources.md): Wrapper for the general D3 game data.
-
+ø
