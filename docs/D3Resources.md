@@ -31,7 +31,7 @@ MyResources = D3General(api_key="SOME_API_KEY", locale="en_GB")
 
 _*Any method in the form_ ``get_X_data()`` _returns unchanged raw json data from the Blizzard API in a dictionary._
 
-There are currently only methods for fetching raw API data in ``D3Profile``.
+There are currently only methods for fetching raw API data in ``D3Resources``.
 
 #### _Retrieving act data:_
 

@@ -641,7 +641,9 @@ class WoWCharacter:
 			return
 
 
-	"""."""
+	"""Returns a dictionary that contains progression information about the selected raid with RAID_NAME.
+
+	   Keys: name, lfr, normal, heroic, mythic, id, bosses"""
 	def get_raid_prog(self, raid_name):
 		if not self.raid_prog_data:
 			raid_prog_data = self.get_raid_prog_data()
@@ -655,7 +657,7 @@ class WoWCharacter:
 		return raid
 
 
-	"""
+	"""Returns an int of the number of BOSS_NAME kills in RAID_NAME on DIFFICULTY..
 
 	   *Mythic difficulty kills start from SoO."""
 	def get_num_boss_kills(self, boss_name, raid_name, difficulty):
@@ -691,7 +693,7 @@ class WoWCharacter:
 			return
 
 
-	"""
+	"""Returns an int of the timetamp of the first selected BOSS_NAME kill in that RAID on that DIFFICULTY.
 
 	   *Mythic difficulty kills start from SoO."""
 	def get_boss_kill_time(self, boss_name, raid, difficulty):
