@@ -1104,7 +1104,7 @@ class WoWCharacter:
 			return
 
 
-	"""."""
+	"""Returns a list of str of title names the selected character owns."""
 	def get_title_names(self):
 		if not self.titles_data:
 			titles_data = self.get_titles_data()
@@ -1112,7 +1112,7 @@ class WoWCharacter:
 		return [title['name'] for title in self.titles_data]
 
 
-	"""."""
+	"""Returns an int of the number of titles the character owns."""
 	def num_titles(self):
 		if not self.titles_data:
 			titles_data = self.get_titles_data()
