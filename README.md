@@ -1,4 +1,4 @@
-# BlizzPy - A Blizzard API Wrapper for Python
+# BlizzPy - An Open-Source Blizzard API Wrapper Library for Python
 > Written by Lewis Kim
 
 ### Description

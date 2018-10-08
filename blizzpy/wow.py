@@ -1166,7 +1166,6 @@ class WoWGuild:
 	# The following are API request functions. Returns the URL that contains the JSON data fetched
 	# from Blizzard's API.
 
-
 	def _api_request(self, endpoint):
 		return
 

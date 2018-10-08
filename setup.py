@@ -19,7 +19,7 @@ setup(
 	url='https://github.com/lounotlew/BlizzPy',
 	author='Lewis Kim',
 	author_email='lewis.k@berkeley.edu',
-	description="A comprehensive open-source API wrapper library for Blizzard's REST API. Currently supports WoW, SC2, and Diablo 3 game data.",
+	description="A comprehensive open-source API wrapper library for Blizzard's API. Currently supports WoW, SC2, and Diablo 3 game data.",
 	license='Apache2',
 	classifiers=[
           'Development Status :: 4 - Beta',
