@@ -23,9 +23,7 @@ or, if you have both Python 2 and Python 3 installed:
 
 ``pip3 install blizzpy``
 
-Required packages:
-
-1) ``pandas`` (``pip3 install pandas``)
+PyPI Link: https://pypi.org/project/BlizzPy/#description
 
 ### References
 
