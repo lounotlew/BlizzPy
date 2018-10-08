@@ -11,11 +11,13 @@ BlizzPy currently supports the WoW Community API, SC2 Community API, and D3 Comm
 
 Click [here](https://github.com/lounotlew/BlizzPy/tree/master/docs) to view documentations for BlizzPy.
 
+Current version: ``v1.0.0``
+
 ### Installation
 
 BlizzPy was written in Python 3.6, and will not work with Python 2.
 
-You can easily install BlizzPy v1.0.0 through ``pip``:
+You can easily install BlizzPy through ``pip``:
 
 ``pip install blizzpy``
 
