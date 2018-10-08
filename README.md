@@ -15,9 +15,13 @@ Click [here](https://github.com/lounotlew/BlizzPy/tree/master/docs) to view docu
 
 BlizzPy was written in Python 3.6, and will not work with Python 2.
 
-To install BlizzPy, simply run
+You can easily install BlizzPy v1.0.0 through ``pip``:
 
-``placeholder code until blizzpy gets properly published.``
+``pip install blizzpy``
+
+or, if you have both Python 2 and Python 3 installed:
+
+``pip3 install blizzpy``
 
 Required packages:
 
