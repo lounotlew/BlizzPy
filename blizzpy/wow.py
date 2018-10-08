@@ -1126,11 +1126,11 @@ class WoWGuild:
 	""".
 
 	   PARAMS:
-	   self.root:
-	   self.api_key:
-	   self.locale:
-	   self.characterName:
-	   self.realm:"""
+	   self.root: String root URL.
+	   self.api_key: Your API key (String).
+	   self.locale: String locale of the region.
+	   self.guild_name: String name of the guild to be searched.
+	   self.realm: String name of the realm the guild is on. """
 	def __init__(self, api_key, guild_name, realm, locale="en_US", token=None):
 		# Check if the user-given locale is supported, i.e. is one of Blizzard's regions.
 		if locale not in accepted_locales:
@@ -1163,11 +1163,14 @@ class WoWGuild:
 		self.challenge_data = []
 
 
-	"""."""
+	# The following are API request functions. Returns the URL that contains the JSON data fetched
+	# from Blizzard's API.
+
+
 	def _api_request(self, endpoint):
 		return
 
-	"""."""
+
 	def _get_data_url(self):
 		url = "{root}/wow/guild/{realm}/{guild_name}?locale={locale}&apikey={api_key}".format(
 			root = self.root,
@@ -1180,7 +1183,6 @@ class WoWGuild:
 		return url
 
 
-	"""."""
 	def _get_data_with_field_url(self, field):
 		url = "{root}/wow/guild/{realm}/{guild_name}?fields={field}&locale={locale}&apikey={api_key}".format(
 			root = self.root,
