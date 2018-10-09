@@ -10,7 +10,7 @@ To initialize an instance of ``WoWPets``:
 ```python
 from blizzpy.wow import WoWPets
 
-MyAuction = WoWPets(api_key, locale="en_US", token=None)
+MyPets = WoWPets(api_key, locale="en_US", token=None)
 ```
 
 Supported locales: "en_US", "eu_GB", "ko_KR".
